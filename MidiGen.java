@@ -13,11 +13,11 @@ public class MidiGen {
     static final int semibreve=64;
 
     static final int header[]=new int[] {
-	0x4d, 0x54, 0x68, 0x64, 0x00, 0x00, 0x06,
+	0x4d, 0x54, 0x68, 0x64, 0x00, 0x00, 0x00, 0x06,
 	0x00, 0x00,
 	0x00, 0x01,
 	0x00, 0x10,
-	0x4d, 0x54, 0x72, 0x68
+	0x4d, 0x54, 0x72, 0x6B
     };
 
     static final int footer[]=new int[] {
@@ -160,6 +160,22 @@ public class MidiGen {
 	mf.noteOnOffNow(quaver,71,127);
 	mf.noteOnOffNow(quaver,72,127);
 
+	int[] sequence=new int[] {
+	    60,quaver+semiquaver,
+	    65,semiquaver,
+	    70,crotchet+quaver,
+	    69,quaver,
+	    65,quaver/3,
+	    62,quaver/3,
+	    67,quaver/3,
+	    72,minim+quaver,
+	    -1,semiquaver,
+	    72,semiquaver,
+	    76,minim,
+	};
+
+	mf.progChange(10);
+	mf.noteSequenceFixedVelocity(sequence,127);
 	mf.writeToFile("test1.mid");
     }
 }
