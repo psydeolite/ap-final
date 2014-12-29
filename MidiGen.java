@@ -59,7 +59,7 @@ public class MidiGen {
 	}
 	
 	int high=size/256;
-	int low=size=(high*256);
+	int low=size-(high*256);
 	fos.write ((byte) 0);
 	fos.write((byte) 0);
 	fos.write((byte) high);
