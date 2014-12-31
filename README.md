@@ -13,5 +13,6 @@ Use
 
 Changes
 =====
-12/19 - created repo
-12/30 - started creating GUI - RA
+12/19 - created repo <br/>
+12/30 - started creating GUI - RA <br/>
+12/30 - created Synth, Key (basic constructor and turn on/off), Piano class - MG <br/>
