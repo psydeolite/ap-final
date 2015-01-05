@@ -8,16 +8,24 @@ public class Synth extends JFrame{
     //Piano piano;
     private Container pane;
     private JPanel canvas;
-    private JButton b1,b2;
+    private JButton record,play,stop,save;
     private JLabel label;
     public Synth() {
 	setTitle("Synth");
-	setSize(300,300);
+	setSize(600,600);
 	setLocation(100,100);
 	setDefaultCloseOperation(EXIT_ON_CLOSE);
 	
 	pane=getContentPane();
 	pane.setLayout(new FlowLayout());
+	record = new JButton ("Record");
+	pane.add(record);
+	play = new JButton ("Play");
+	pane.add(play);
+	stop = new JButton ("Stop");
+	pane.add(stop);
+	save = new JButton ("Save");
+	pane.add(save);
     }
     public static void main(String[] args) {
 	Synth s=new Synth();
