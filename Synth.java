@@ -15,7 +15,6 @@ public class Synth extends JFrame{
 	setSize(300,300);
 	setLocation(100,100);
 	setDefaultCloseOperation(EXIT_ON_CLOSE);
-	
 	pane=getContentPane();
 	pane.setLayout(new FlowLayout());
     }
@@ -24,9 +23,19 @@ public class Synth extends JFrame{
 	s.setVisible(true);
     }
 
-	
-	
-    /* class Key extends Rectangle {
+    class Controls {
+	//buttons here
+    }
+
+    class InstrumentTable {
+	//instrument selection
+    }
+    
+    class ChannelTable {
+	//channel stuff
+    }
+
+    class Key extends Rectangle {
 	boolean noteOn=false;
 	int keynum;
 	public Key(int x, int y, int w, int h, int n) {
@@ -60,7 +69,7 @@ public class Synth extends JFrame{
 	    //records a sound
 	}
     }
-    */
+    
     
 }
 	
