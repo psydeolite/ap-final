@@ -68,7 +68,10 @@ public class Synth extends JFrame{
 	List whitekeys=new ArrayList<Key>();
 	List blackkeys=new ArrayList<Key>();
 	List keys={Key As, Key Cs, Key Ds, Key Fs, Key Gs, Key As2, Key A, Key B, Key C, Key D, Key E, Key F, Key G, Key A2, Key B2, Key C2};
+
 	public Piano() {
+	    setLayout(new BorderLayout());
+
 	    int keystart=57;
 	    for (i=0;i<15;i++) {
 		//makes key, starting keynum at 57 and incrementing by one
@@ -80,6 +83,13 @@ public class Synth extends JFrame{
 		}
 		keystart++;
 	    }
+	}
+	public void paint () //when mouse is clicked
+           {
+
+
+
+
 	}
 	public void keyPress(key k) {
 	    //change color
