@@ -44,36 +44,61 @@ public class Synth extends JFrame{
     }
 
     class Key extends Rectangle {
-	boolean noteOn=false;
+	boolean on=false;
 	int keynum;
 	public Key(int x, int y, int w, int h, int n) {
 	    super(x,y,w,h);
 	    keynum=n;
 	}
 	public boolean isOn() {
-	    return noteOn;
+	    return on;
 	}
-	public boolean turnOn() {
-	    noteOn=true;
+	public boolean turnOn(MidiChannel channel, int pitch) {
+	    on=true;
+	    channel.noteOn(pitch, 60);
 	}
-	public boolean turnOff() {
-	    noteOn=false;
+	public boolean turnOff(MidiChannel channel, int pitch) {
+	    on=false;
+	    channel.noteOff(pitch);
 	}
     }
 
     class Piano extends JPanel implements MouseListener {
+	boolean pressed=false;
 	List whitekeys=new ArrayList<Key>();
 	List blackkeys=new ArrayList<Key>();
+	List keys={Key As, Key Cs, Key Ds, Key Fs, Key Gs, Key As2, Key A, Key B, Key C, Key D, Key E, Key F, Key G, Key A2, Key B2, Key C2};
 	public Piano() {
-	    //makes the piano
+	    int keystart=57;
+	    for (i=0;i<15;i++) {
+		//makes key, starting keynum at 57 and incrementing by one
+		//adds to white/black array, depending on pitch
+		if (keys.get(i).keynum<6) {
+		    blackkeys.add(keys.get(i));
+		} else {
+		    whitekeys.add(keys.get(i));
+		}
+		keystart++;
+	    }
 	}
 	public void keyPress(key k) {
 	    //change color
+	    keySound(k);
+	    pressed=true;
 	}
-	public void keySound(key k) {
-	    //emits a sound
+	
+	public void keyUnpress(MidiChannel c, key k) {
+	    //change color back
+	    k.turnOff(key.keynum, 50);
 	}
+
+	public void keySound(MidiChannel c, key k) {
+	    //makes sound
+	    k.turnOn(key,keynum, 50);
+	}
+
 	public void keyRecord(key k) {
+	    keySound(k);
 	    //records a sound
 	}
     }
