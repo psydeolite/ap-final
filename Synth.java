@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.*;
 import javax.sound.midi.*;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
 public class Synth extends JFrame{
@@ -53,52 +54,52 @@ public class Synth extends JFrame{
 	public boolean isOn() {
 	    return on;
 	}
-	public boolean turnOn(MidiChannel channel, int pitch) {
+	public void turnOn(MidiChannel channel, int pitch) {
 	    on=true;
 	    channel.noteOn(pitch, 60);
 	}
-	public boolean turnOff(MidiChannel channel, int pitch) {
+	public void turnOff(MidiChannel channel, int pitch) {
 	    on=false;
 	    channel.noteOff(pitch);
 	}
     }
 
-    class Piano extends JPanel implements MouseListener {
+    abstract class Piano extends JPanel implements MouseListener {
 	boolean pressed=false;
-	List whitekeys=new ArrayList<Key>();
-	List blackkeys=new ArrayList<Key>();
-	List keys={Key As, Key Cs, Key Ds, Key Fs, Key Gs, Key As2, Key A, Key B, Key C, Key D, Key E, Key F, Key G, Key A2, Key B2, Key C2};
+	ArrayList<Key> whitekeys=new ArrayList<Key>();
+	ArrayList<Key> blackkeys=new ArrayList<Key>(); 
+	ArrayList<Key> keys= new ArrayList<Key>();
 	public Piano() {
 	    int keystart=57;
-	    for (i=0;i<15;i++) {
+	    for (int i=0;i<15;i++) {
 		//makes key, starting keynum at 57 and incrementing by one
-		//adds to white/black array, depending on pitch
-		if (keys.get(i).keynum<6) {
-		    blackkeys.add(keys.get(i));
-		} else {
+		//adds to keys and white/black array, depending on pitch
+		if (keystart!=58 && keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70) {
 		    whitekeys.add(keys.get(i));
+		} else {
+		    blackkeys.add(keys.get(i));
 		}
 		keystart++;
 	    }
 	}
-	public void keyPress(key k) {
+	public void keyPress(MidiChannel c, Key k) {
 	    //change color
-	    keySound(k);
+	    keySound(c,k);
 	    pressed=true;
 	}
 	
-	public void keyUnpress(MidiChannel c, key k) {
+	public void keyUnpress(MidiChannel c, Key k) {
 	    //change color back
-	    k.turnOff(key.keynum, 50);
+	    k.turnOff(c, k.keynum);
 	}
 
-	public void keySound(MidiChannel c, key k) {
+	public void keySound(MidiChannel c, Key k) {
 	    //makes sound
-	    k.turnOn(key,keynum, 50);
+	    k.turnOn(c, k.keynum);
 	}
 
-	public void keyRecord(key k) {
-	    keySound(k);
+	public void keyRecord(MidiChannel c, Key k) {
+	    keySound(c, k);
 	    //records a sound
 	}
     }
