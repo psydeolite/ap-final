@@ -1,16 +1,23 @@
 import java.io.*;
 import java.util.*;
 import javax.sound.midi.*;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Synthesizer;
+import javax.sound.midi.MidiChannel;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 public class Synth extends JFrame{
-    //Piano piano;
+    Synthesizer syn; //MidiSystem.getSynthesizer();
+    Piano piano;
+    MidiChannel[] channels;
+    MidiChannel cc; 
     private Container pane;
     private JPanel canvas;
     private JButton record,play,stop,save;
     private JLabel label;
+    
     public Synth() {
 	setTitle("Synth");
 	setSize(600,600);
@@ -26,6 +33,7 @@ public class Synth extends JFrame{
 	pane.add(stop);
 	save = new JButton ("Save");
 	pane.add(save);
+	channels=syn.getChannels();
     }
     public static void main(String[] args) {
 	Synth s=new Synth();
@@ -64,7 +72,7 @@ public class Synth extends JFrame{
 	}
     }
 
-    abstract class Piano extends JPanel implements MouseListener {
+    class Piano extends JPanel implements MouseListener {
 	boolean pressed=false;
 	ArrayList<Key> whitekeys=new ArrayList<Key>();
 	ArrayList<Key> blackkeys=new ArrayList<Key>(); 
@@ -93,7 +101,13 @@ public class Synth extends JFrame{
 
 
 	}
-	public void keyPress(key k) {
+
+	public void mouseClicked(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {}
+	public void keyPress(MidiChannel c, Key k) {
 	    //change color
 	    keySound(c,k);
 	    pressed=true;
