@@ -34,6 +34,10 @@ public class Synth extends JFrame{
 	save = new JButton ("Save");
 	pane.add(save);
 	channels=syn.getChannels();
+	JPanel rect = new JPanel (new BorderLayout());
+	//	Piano piano;
+	//	rect.add(piano = new Piano());
+
     }
     public static void main(String[] args) {
 	Synth s=new Synth();
@@ -107,6 +111,7 @@ public class Synth extends JFrame{
 	public void mouseReleased(MouseEvent e) {}
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
+
 	public void keyPress(MidiChannel c, Key k) {
 	    //change color
 	    keySound(c,k);
