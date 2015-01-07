@@ -10,9 +10,11 @@ import javax.swing.*;
 
 public class Synth extends JFrame{
     Synthesizer syn; //MidiSystem.getSynthesizer();
+    Sequence seq;
     Piano piano;
-    MidiChannel[] channels;
-    MidiChannel cc; 
+    Chanel[] channels;
+    Chanel cc;
+    Instrument[] instruments;
     private Container pane;
     private JPanel canvas;
     private JButton record,play,stop,save;
@@ -33,21 +35,53 @@ public class Synth extends JFrame{
 	pane.add(stop);
 	save = new JButton ("Save");
 	pane.add(save);
-	channels=syn.getChannels();
 	JPanel rect = new JPanel (new BorderLayout());
 	//	Piano piano;
 	//	rect.add(piano = new Piano());
 
     }
+
+    public void open() {
+	try {
+	    if (syn!=null) {
+		System.out.println("can't open synth");
+		return;
+	    } else {
+		syn.open();
+	    }
+	} catch (Exception e) {e.printStackTrace();return;}
+	Soundbank s=syn.getDefaultSoundbank();
+	if (s!=null) {
+	    instruments=syn.getDefaultSoundbank().getInstruments();
+	    syn.loadInstrument(instruments[0]);
+	}
+	MidiChannel mc[]=syn.getChannels();
+	channels=new Chanel[mc.length];
+	for (int i=0;i<5;i++) {
+	    channels[i]=new Chanel(mc[i],i);
+	}
+	cc=channels[0];
+    }
+
+    public void close() {
+	if (syn!=null) {
+	    syn.close();
+	}
+	syn=null;
+	instruments=null;
+	channels=null;
+    }
+    
+    
     public static void main(String[] args) {
 	Synth s=new Synth();
 	s.setVisible(true);
     }
-
+    
     class Controls {
 	//buttons here
     }
-
+    
     class InstrumentTable {
 	//instrument selection
     }
@@ -56,6 +90,17 @@ public class Synth extends JFrame{
 	//channel stuff
     }
 
+    class Chanel {
+	//actual channel stuff
+	MidiChannel channel;
+	int channelnum;
+	public Chanel(MidiChannel c, int cnum) {
+	    channel=c;
+	    channelnum=cnum;
+	}
+    }
+	    
+    
     class Key extends Rectangle {
 	boolean on=false;
 	int keynum;
@@ -66,13 +111,13 @@ public class Synth extends JFrame{
 	public boolean isOn() {
 	    return on;
 	}
-	public void turnOn(MidiChannel channel, int pitch) {
+	public void turnOn(int pitch) {
 	    on=true;
-	    channel.noteOn(pitch, 60);
+	    cc.channel.noteOn(pitch, 60);
 	}
-	public void turnOff(MidiChannel channel, int pitch) {
+	public void turnOff(int pitch) {
 	    on=false;
-	    channel.noteOff(pitch);
+	    cc.channel.noteOff(pitch);
 	}
     }
 
@@ -112,24 +157,24 @@ public class Synth extends JFrame{
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 
-	public void keyPress(MidiChannel c, Key k) {
+	public void keyPress(Key k) {
 	    //change color
-	    keySound(c,k);
+	    keySound(k);
 	    pressed=true;
 	}
 	
-	public void keyUnpress(MidiChannel c, Key k) {
+	public void keyUnpress(Key k) {
 	    //change color back
-	    k.turnOff(c, k.keynum);
+	    k.turnOff(k.keynum);
 	}
 
-	public void keySound(MidiChannel c, Key k) {
+	public void keySound(Key k) {
 	    //makes sound
-	    k.turnOn(c, k.keynum);
+	    k.turnOn(k.keynum);
 	}
 
-	public void keyRecord(MidiChannel c, Key k) {
-	    keySound(c, k);
+	public void keyRecord(Key k) {
+	    keySound(k);
 	    //records a sound
 	}
     }
