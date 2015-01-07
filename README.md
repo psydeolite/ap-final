@@ -3,7 +3,7 @@ ap-final
 
 Mariya Gedrich and Rabia Akhtar Period 2
 
-(description)
+This project includes a Synthesizer. 
 
 Installation
 ==========
