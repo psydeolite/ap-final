@@ -127,26 +127,24 @@ public class Synth extends JFrame{
 
     class Piano extends JPanel implements MouseListener {
 	boolean pressed=false;
-	/*
+	
 	ArrayList<Key> whitekeys=new ArrayList<Key>();
 	ArrayList<Key> blackkeys=new ArrayList<Key>(); 
-	ArrayList<Key> keys= new ArrayList<Key>();
-	*/
 	public Piano() {
 	    setLayout(new BorderLayout());
-	    /*
+	    
 	    int keystart=57;
 	    for (int i=0;i<15;i++) {
 		//makes key, starting keynum at 57 and incrementing by one
 		//adds to keys and white/black array, depending on pitch
 		if (keystart!=58 && keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70) {
-		    whitekeys.add(keys.get(i));
+		    whitekeys.add(new Key(x,y,l,h,keystart);
 		} else {
-		    blackkeys.add(keys.get(i));
+			blackkeys.add(new Key(x,y,l,h,keystart);
 		}
 		keystart++;
 	    
-	*/
+	
 	}
     
 
