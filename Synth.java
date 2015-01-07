@@ -17,7 +17,7 @@ public class Synth extends JFrame{
     private JPanel canvas;
     private JButton record,play,stop,save;
     private JLabel label;
-    
+
     public Synth() {
 	setTitle("Synth");
 	setSize(600,600);
@@ -33,15 +33,19 @@ public class Synth extends JFrame{
 	pane.add(stop);
 	save = new JButton ("Save");
 	pane.add(save);
-	channels=syn.getChannels();
+	//	channels=syn.getChannels();
 	JPanel rect = new JPanel (new BorderLayout());
-	//	Piano piano;
+	rect.setSize(500,600);
+	rect.setBorder(BorderFactory.createLineBorder(Color.black));
+	rect.add(piano = new Piano());
+	pane.add(rect);
 	//	rect.add(piano = new Piano());
 
     }
     public static void main(String[] args) {
 	Synth s=new Synth();
 	s.setVisible(true);
+
     }
 
     class Controls {
@@ -78,13 +82,14 @@ public class Synth extends JFrame{
 
     class Piano extends JPanel implements MouseListener {
 	boolean pressed=false;
+	/*
 	ArrayList<Key> whitekeys=new ArrayList<Key>();
 	ArrayList<Key> blackkeys=new ArrayList<Key>(); 
 	ArrayList<Key> keys= new ArrayList<Key>();
-
+	*/
 	public Piano() {
 	    setLayout(new BorderLayout());
-
+	    /*
 	    int keystart=57;
 	    for (int i=0;i<15;i++) {
 		//makes key, starting keynum at 57 and incrementing by one
@@ -95,8 +100,12 @@ public class Synth extends JFrame{
 		    blackkeys.add(keys.get(i));
 		}
 		keystart++;
-	    }
+	    
+	*/
 	}
+    
+
+	
        
 	public void paint () //when mouse is clicked
            {
@@ -134,8 +143,8 @@ public class Synth extends JFrame{
 	}
     }
     
-    
 }
+
 	
 	
 	    
