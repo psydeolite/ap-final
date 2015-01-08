@@ -129,21 +129,28 @@ public class Synth extends JFrame{
 	ArrayList<Key> blackkeys=new ArrayList<Key>(); 
 	ArrayList<Key> keys=new ArrayList<Key>(); 
 	public Piano() {
-	setPreferredSize(new Dimension(500,600));
-	setBorder(BorderFactory.createLineBorder(Color.black));
+	    setPreferredSize(new Dimension(500,600));
+	    setBorder(BorderFactory.createLineBorder(Color.black));
 	    int keystart=57;
 	    for (int i=0;i<15;i++) {
 		//makes key, starting keynum at 57 and incrementing by one
 		//adds to keys and white/black array, depending on pitch
+		int x; 
 		if (keystart!=58 && keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70) {
 		    whitekeys.add(new Key(5,10,50,50,keystart));
 		} else {
 		    blackkeys.add(new Key(67,45,35,58,keystart));
 		}
 		keystart++;
-	    
+	    }
+	    /*addMouseMotionListener(new MouseMotionAdapter() {
+		    public void mouseMoved(MouseEvent e) {
+			if (mouseOverCB.isSelected()) {
+			    Key key=getKey(e.getPoint());
+			    if prev*/
+	   
 	
-	}
+	
 
 	}
 
@@ -168,16 +175,14 @@ public class Synth extends JFrame{
             }
             for (int i = 0; i < blackkeys.size(); i++) {
                 Key key = (Key) blackkeys.get(i);
-                    g2.setColor(Color.black);
-                    g2.fill(key);
-                }
+		g2.setColor(Color.black);
+		g2.fill(key);
+	    }
 	}
 
-
-
-    
-
-	public void mouseClicked(MouseEvent e) {}
+	public void mouseClicked(MouseEvent e) {
+	    System.out.println("click");
+	}
 	public void mousePressed(MouseEvent e) {}
 	public void mouseReleased(MouseEvent e) {}
 	public void mouseEntered(MouseEvent e) {}
