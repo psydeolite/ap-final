@@ -36,8 +36,6 @@ public class Synth extends JFrame{
 	save = new JButton ("Save");
 	pane.add(save);
 	JPanel rect = new JPanel (new BorderLayout());
-	rect.setPreferredSize(new Dimension(500,600));
-	rect.setBorder(BorderFactory.createLineBorder(Color.black));
 	rect.add(piano = new Piano());
 	pane.add(rect);
 	//	rect.add(piano = new Piano());
@@ -127,12 +125,12 @@ public class Synth extends JFrame{
 
     class Piano extends JPanel implements MouseListener {
 	boolean pressed=false;
-	
 	ArrayList<Key> whitekeys=new ArrayList<Key>();
 	ArrayList<Key> blackkeys=new ArrayList<Key>(); 
+	ArrayList<Key> keys=new ArrayList<Key>(); 
 	public Piano() {
-	    setLayout(new BorderLayout());
-	    
+	setPreferredSize(new Dimension(500,600));
+	setBorder(BorderFactory.createLineBorder(Color.black));
 	    int keystart=57;
 	    for (int i=0;i<15;i++) {
 		//makes key, starting keynum at 57 and incrementing by one
@@ -146,17 +144,38 @@ public class Synth extends JFrame{
 	    
 	
 	}
+
 	}
+
 
 	
        
-	public void paint () //when mouse is clicked
-           {
+	public void paint (Graphics g) //when mouse is clicked
+	{
+	    Graphics2D g2 = (Graphics2D) g;
+            Dimension d = getSize();
 
+            g2.setBackground(getBackground());
+            g2.clearRect(0, 0, d.width, d.height);
 
+            g2.setColor(Color.white);
+            g2.fillRect(0, 0, 42*16, 80);
 
-
+            for (int i = 0; i < whitekeys.size(); i++) {
+                Key key = (Key) whitekeys.get(i);
+                g2.setColor(Color.black);
+                g2.draw(key);
+            }
+            for (int i = 0; i < blackkeys.size(); i++) {
+                Key key = (Key) blackkeys.get(i);
+                    g2.setColor(Color.black);
+                    g2.fill(key);
+                }
 	}
+
+
+
+    
 
 	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {}
