@@ -34,7 +34,7 @@ public class Synth extends JFrame{
 	stop = new JButton ("Stop");
 	pane.add(stop);
 	save = new JButton ("Save");
-	pane.add(save
+	pane.add(save);
 	JPanel rect = new JPanel (new BorderLayout());
 	rect.setSize(500,600);
 	rect.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -138,15 +138,15 @@ public class Synth extends JFrame{
 		//makes key, starting keynum at 57 and incrementing by one
 		//adds to keys and white/black array, depending on pitch
 		if (keystart!=58 && keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70) {
-		    whitekeys.add(new Key(x,y,l,h,keystart);
+		    whitekeys.add(new Key(x,y,l,h,keystart));
 		} else {
-			blackkeys.add(new Key(x,y,l,h,keystart);
+		    blackkeys.add(new Key(x,y,l,h,keystart));
 		}
 		keystart++;
 	    
 	
 	}
-    
+	}
 
 	
        
