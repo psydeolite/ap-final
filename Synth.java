@@ -132,7 +132,7 @@ public class Synth extends JFrame{
 	setPreferredSize(new Dimension(500,600));
 	setBorder(BorderFactory.createLineBorder(Color.black));
 	    int keystart=57;
-	    for (int i=0, x = 0, y= 0;i<15;i++, x+=12, y+=16) {
+	    for (int i=0, x = 0, y= 0;i<25;i++, x+=12, y+=16) {
 		//makes key, starting keynum at 57 and incrementing by one
 		//adds to keys and white/black array, depending on pitch
 		if (keystart!=58 && keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70) {
