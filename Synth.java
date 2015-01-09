@@ -127,15 +127,16 @@ public class Synth extends JFrame{
 	boolean pressed=false;
 	ArrayList<Key> whitekeys=new ArrayList<Key>();
 	ArrayList<Key> blackkeys=new ArrayList<Key>(); 
-	ArrayList<Key> keys=new ArrayList<Key>(); 
+	ArrayList<Key> keys=new ArrayList<Key>();
+	Key pkey;
+      
 	public Piano() {
 	    setPreferredSize(new Dimension(500,600));
 	    setBorder(BorderFactory.createLineBorder(Color.black));
 	    int keystart=57;
 	    for (int i=0, x = 0, y= 0;i<15;i++, x+=12, y+=16) {
 		//makes key, starting keynum at 57 and incrementing by one
-		//adds to keys and white/black array, depending on pitch
-		int x; 
+		//adds to keys and white/black array, depending on pitch 
 		if (keystart!=58 && keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70) {
 		    whitekeys.add(new Key(y,0,16,80,keystart));
 		} else {
@@ -143,20 +144,11 @@ public class Synth extends JFrame{
 		}
 		keystart++;
 	    }
-	    /*addMouseMotionListener(new MouseMotionAdapter() {
-		    public void mouseMoved(MouseEvent e) {
-			if (mouseOverCB.isSelected()) {
-			    Key key=getKey(e.getPoint());
-			    if prev*/
-	   
-	
-	
-
+	    keys.addAll(whitekeys);
+	    keys.addAll(blackkeys);
 	}
 
 
-	
-       
 	public void paint (Graphics g) //when mouse is clicked
 	{
 	    Graphics2D g2 = (Graphics2D) g;
@@ -178,13 +170,25 @@ public class Synth extends JFrame{
 		g2.setColor(Color.black);
 		g2.fill(key);
 	    }
+
+	    //if pressed, change color of key
 	}
 
 	public void mouseClicked(MouseEvent e) {
-	    System.out.println("click");
 	}
-	public void mousePressed(MouseEvent e) {}
-	public void mouseReleased(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {
+	    pkey=getKey(e.getPoint());
+	    if (pkey!=null) {
+		keySound(pkey);
+		System.out.println("mouse pressed");
+	    }
+	}
+	public void mouseReleased(MouseEvent e) {
+	    if (pkey!=null) {
+		keyUnpress(pkey);
+		pkey=null;
+	    }
+	}
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 
@@ -197,6 +201,7 @@ public class Synth extends JFrame{
 	public void keyUnpress(Key k) {
 	    //change color back
 	    k.turnOff(k.keynum);
+	    pressed=false;
 	}
 
 	public void keySound(Key k) {
@@ -207,6 +212,15 @@ public class Synth extends JFrame{
 	public void keyRecord(Key k) {
 	    keySound(k);
 	    //records a sound
+	}
+
+	public Key getKey(Point p) {
+	    for (int i=0; i<keys.size();i++) {
+		if (((Key) keys.get(i)).contains(p)) {
+		    return keys.get(i);
+		}
+	    }
+	    return null;
 	}
     }
     
