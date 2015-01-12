@@ -1,4 +1,4 @@
-ap-final
+Synthesizer
 ========
 
 Mariya Gedrich and Rabia Akhtar Period 2
