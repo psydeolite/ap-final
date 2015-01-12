@@ -178,11 +178,13 @@ public class Synth extends JFrame{
 		g2.setColor(Color.black);
 		g2.fill(key);
 	    }
+	    addMouseListener(this);
 
 	    //if pressed, change color of key
 	}
 
 	public void mouseClicked(MouseEvent e) {
+	    System.out.print("erh");
 	}
 	public void mousePressed(MouseEvent e) {
 	    pkey=getKey(e.getPoint());
@@ -224,7 +226,9 @@ public class Synth extends JFrame{
 
 	public Key getKey(Point p) {
 	    for (int i=0; i<keys.size();i++) {
+		System.out.println("enteredloop");
 		if (((Key) keys.get(i)).contains(p)) {
+		    System.out.println("gotkey");
 		    return keys.get(i);
 		}
 	    }
