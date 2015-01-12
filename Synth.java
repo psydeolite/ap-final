@@ -184,10 +184,12 @@ public class Synth extends JFrame{
 	}
 
 	public void mouseClicked(MouseEvent e) {
-	    System.out.print("erh");
+	    System.out.print("Mouse clicked");
 	}
 	public void mousePressed(MouseEvent e) {
 	    pkey=getKey(e.getPoint());
+	    //System.out.println(pkey);
+	    //System.out.println(pkey.keynum);
 	    if (pkey!=null) {
 		keySound(pkey);
 		System.out.println("mouse pressed");
@@ -195,6 +197,7 @@ public class Synth extends JFrame{
 	}
 	public void mouseReleased(MouseEvent e) {
 	    if (pkey!=null) {
+		System.out.println("mouse released");
 		keyUnpress(pkey);
 		pkey=null;
 	    }
@@ -216,6 +219,7 @@ public class Synth extends JFrame{
 
 	public void keySound(Key k) {
 	    //makes sound
+	    System.out.println(k.keynum);
 	    k.turnOn(k.keynum);
 	}
 
