@@ -22,7 +22,7 @@ public class Synth extends JFrame{
 
     public Synth() {
 	setTitle("Synth");
-	setSize(600,600);
+	setSize(700,700);
 	setLocation(100,100);
 	setDefaultCloseOperation(EXIT_ON_CLOSE);
 	pane=getContentPane();
@@ -131,24 +131,22 @@ public class Synth extends JFrame{
 	Key pkey;
       
 	public Piano() {
-	    setPreferredSize(new Dimension(500,600));
-	    setBorder(BorderFactory.createLineBorder(Color.black));
-	setPreferredSize(new Dimension(500,600));
+	setPreferredSize(new Dimension(600,700));
 	setBorder(BorderFactory.createLineBorder(Color.black));
 	    int keystart=60;
-	    for (int i=0, x = 0, y= 0;i<16;i++, x+=9, y+=16) {
-		//makes key, starting keynum at 57 and incrementing by one
+	    for (int i=0, x = 0, y= 0;i<16;i++, x+=30, y+=40) {
+		//makes key, starting keynum at 60 and incrementing by one
 		//adds to keys and white/black array, depending on pitch
 		if (keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70 && keystart!=73) { 
-		    whitekeys.add(new Key(y,0,16,80,keystart));
+		    whitekeys.add(new Key(y,0,160,230,keystart));
 		    //x-=12;
 		} else {
 		    if (keystart==61) {
-			blackkeys.add(new Key(12,0,9,45,keystart));
+			blackkeys.add(new Key(12,0,20,150,keystart));
 		    } else {
-			blackkeys.add(new Key(x,0,9,45,keystart));
+			blackkeys.add(new Key(x,0,20,150,keystart));
 		    }
-		    y-=16;
+		    y-=40;
 		}
 		keystart++;
 	    }
@@ -163,10 +161,10 @@ public class Synth extends JFrame{
             Dimension d = getSize();
 
             g2.setBackground(getBackground());
-            g2.clearRect(0, 0, 5000, 600);
+            g2.clearRect(0, 0, 5000, 700);
 
             g2.setColor(Color.white);
-            g2.fillRect(0, 0, 500, 200);
+            g2.fillRect(0, 0, 520,230);
 
             for (int i = 0; i < whitekeys.size(); i++) {
                 Key key = (Key) whitekeys.get(i);
