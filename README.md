@@ -10,9 +10,8 @@ Installation
 1. Pull folder
 2. Compile Synth.java 
 3. Run Synth 
-4. 
 Use
-====
+=============
 
 Changes
 =====
@@ -27,3 +26,4 @@ Changes
 01/12 - Made piano bigger and Masha worked on the mouselistener - RA
  <br/>
 01/13 - Fixed NullPointerException Error, adjusted piano keys, fixed keypress things -MG
+01/13 - Added repaint function and had the piano actually respon to clicks and play keys! - RA
