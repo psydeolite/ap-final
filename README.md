@@ -24,7 +24,7 @@ Changes
 01/07 - made Piano box and class, edited layout and made buttons. Went home and got some haphazard looking keys to show up on a piano looking rectangle. - RA <br/>
 01/08 - Made a keyboard looking thing. Some of the keys aren't positioned correctly. - RA <br/>
 01/11 - Fixed key positioning. - MG <br/>
-01/12 - Made piano bigger and Masha worked on the mouselistener - RA
+01/12 - Made piano bigger and Mariya worked on the mouselistener - RA
  <br/>
 01/13 - Fixed NullPointerException Error, adjusted piano keys, fixed keypress things - MG <br/>
 01/13 - Added repaint function and had the piano actually respon to clicks and play keys! - RA
