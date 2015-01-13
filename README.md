@@ -10,6 +10,7 @@ Installation
 1. Pull folder
 2. Compile Synth.java 
 3. Run Synth 
+4. 
 Use
 ====
 
