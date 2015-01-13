@@ -155,30 +155,26 @@ public class Synth extends JFrame{
 	}
 
 
-	public void paint (Graphics g) //when mouse is clicked
+	public void paint (Graphics thing)
 	{
-	    Graphics2D g2 = (Graphics2D) g;
+	    Graphics2D g = (Graphics2D) thing;
             Dimension d = getSize();
-
-            g2.setBackground(getBackground());
-            g2.clearRect(0, 0, 5000, 700);
-
-            g2.setColor(Color.white);
-            g2.fillRect(0, 0, 520,230);
-
+            g.setBackground(getBackground());
+            g.clearRect(0, 0, 5000, 700);
+            g.setColor(Color.white);
+            g.fillRect(0, 0, 520,230);
             for (int i = 0; i < whitekeys.size(); i++) {
                 Key key = (Key) whitekeys.get(i);
-                g2.setColor(Color.black);
-                g2.draw(key);
+                g.setColor(Color.black);
+                g.draw(key);
             }
             for (int i = 0; i < blackkeys.size(); i++) {
                 Key key = (Key) blackkeys.get(i);
-		g2.setColor(Color.black);
-		g2.fill(key);
+		g.setColor(Color.black);
+		g.fill(key);
 	    }
 	    addMouseListener(this);
 
-	    //if pressed, change color of key
 	}
 
 	public void mouseClicked(MouseEvent e) {
