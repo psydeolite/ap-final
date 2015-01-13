@@ -58,6 +58,7 @@ public class Synth extends JFrame{
 		MidiChannel mc[]=syn.getChannels();
 		channels=new Chanel[mc.length];
 		for (int i=0;i<5;i++) {
+		    //System.out.println("added channel "+i);
 		    channels[i]=new Chanel(mc[i],i);
 		}
 		cc=channels[0];
