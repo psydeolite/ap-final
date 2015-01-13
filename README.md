@@ -3,11 +3,13 @@ Synthesizer
 
 Mariya Gedrich and Rabia Akhtar Period 2
 
-This project includes a Synthesizer. 
+This project includes a Synthesizer, there are 5 types of instruments you can play using the keyboard. 
 
 Installation
 ==========
-
+1. Pull folder
+2. Compile Synth.java 
+3. Run Synth 
 Use
 ====
 
