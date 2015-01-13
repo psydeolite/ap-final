@@ -44,24 +44,30 @@ public class Synth extends JFrame{
 
     public void open() {
 	try {
-	    if (syn!=null) {
+	    syn=MidiSystem.getSynthesizer();
+	    if (syn==null) {
 		System.out.println("can't open synth");
 		return;
 	    } else {
 		syn.open();
+		Soundbank s=syn.getDefaultSoundbank();
+		if (s!=null) {
+		    instruments=syn.getDefaultSoundbank().getInstruments();
+		    syn.loadInstrument(instruments[0]);
+		}
+		MidiChannel mc[]=syn.getChannels();
+		channels=new Chanel[mc.length];
+		for (int i=0;i<5;i++) {
+		    System.out.println("added channel "+i);
+		    channels[i]=new Chanel(mc[i],i);
+		}
+		cc=channels[0];
+	       
 	    }
-	} catch (Exception e) {e.printStackTrace();return;}
-	Soundbank s=syn.getDefaultSoundbank();
-	if (s!=null) {
-	    instruments=syn.getDefaultSoundbank().getInstruments();
-	    syn.loadInstrument(instruments[0]);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    return;
 	}
-	MidiChannel mc[]=syn.getChannels();
-	channels=new Chanel[mc.length];
-	for (int i=0;i<5;i++) {
-	    channels[i]=new Chanel(mc[i],i);
-	}
-	cc=channels[0];
     }
 
     public void close() {
@@ -77,7 +83,7 @@ public class Synth extends JFrame{
     public static void main(String[] args) {
 	Synth s=new Synth();
 	s.setVisible(true);
-
+	s.open();
     }
     
     class Controls {
@@ -134,17 +140,17 @@ public class Synth extends JFrame{
 	setPreferredSize(new Dimension(600,700));
 	setBorder(BorderFactory.createLineBorder(Color.black));
 	    int keystart=60;
-	    for (int i=0, x = 0, y= 0;i<16;i++, x+=30, y+=40) {
+	    for (int i=0, x = 0, y= 0;i<16;i++, x+=23, y+=40) {
 		//makes key, starting keynum at 60 and incrementing by one
 		//adds to keys and white/black array, depending on pitch
-		if (keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70 && keystart!=73) { 
+		if (keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70 && keystart!=73 && keystart!=75 && keystart!=78 && keystart!=81) { 
 		    whitekeys.add(new Key(y,0,160,230,keystart));
 		    //x-=12;
 		} else {
 		    if (keystart==61) {
-			blackkeys.add(new Key(12,0,20,150,keystart));
+			blackkeys.add(new Key(26,0,25,150,keystart));
 		    } else {
-			blackkeys.add(new Key(x,0,20,150,keystart));
+			blackkeys.add(new Key(x,0,25,150,keystart));
 		    }
 		    y-=40;
 		}
@@ -203,6 +209,7 @@ public class Synth extends JFrame{
 	public void keyPress(Key k) {
 	    //change color
 	    keySound(k);
+	    repaint();
 	    pressed=true;
 	}
 	
