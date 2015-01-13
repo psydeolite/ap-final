@@ -58,6 +58,7 @@ public class Synth extends JFrame{
 		MidiChannel mc[]=syn.getChannels();
 		channels=new Chanel[mc.length];
 		for (int i=0;i<5;i++) {
+		    //System.out.println("added channel "+i);
 		    channels[i]=new Chanel(mc[i],i);
 		}
 		cc=channels[0];
@@ -120,10 +121,12 @@ public class Synth extends JFrame{
 	  
 	}
 	public void turnOn(int pitch) {
+	    System.out.println("turn on");
 	    on=true;
 	    cc.channel.noteOn(pitch, 60);
 	}
 	public void turnOff(int pitch) {
+	    System.out.println("turn off");
 	    on=false;
 	    cc.channel.noteOff(pitch);
 	}
@@ -140,7 +143,7 @@ public class Synth extends JFrame{
 	setPreferredSize(new Dimension(600,700));
 	setBorder(BorderFactory.createLineBorder(Color.black));
 	    int keystart=60;
-	    for (int i=0, x = 0, y= 0;i<16;i++, x+=23, y+=40) {
+	    for (int i=0, x = 0, y= 0;i<17;i++, x+=23, y+=40) {
 		//makes key, starting keynum at 60 and incrementing by one
 		//adds to keys and white/black array, depending on pitch
 		if (keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70 && keystart!=73 && keystart!=75 && keystart!=78 && keystart!=81) { 
@@ -193,15 +196,13 @@ public class Synth extends JFrame{
 
 	}
 
-	public void mouseClicked(MouseEvent e) {
-	    //System.out.print("Mouse clicked");
-	}
+	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {
 	    pkey=getKey(e.getPoint());
 	    //System.out.println(pkey);
 	    //System.out.println(pkey.keynum);
 	    if (pkey!=null) {
-		keySound(pkey);
+		keyPress(pkey);
 		//System.out.println("mouse pressed");
 	    }
 	}
