@@ -117,6 +117,7 @@ public class Synth extends JFrame{
 	}
 	public boolean isOn() {
 	    return on;
+	  
 	}
 	public void turnOn(int pitch) {
 	    on=true;
@@ -170,13 +171,23 @@ public class Synth extends JFrame{
             g.fillRect(0, 0, 520,230);
             for (int i = 0; i < whitekeys.size(); i++) {
                 Key key = (Key) whitekeys.get(i);
+		if (key.isOn()) {
+                    g.setColor(Color.blue);
+                    g.fill(key);
+                }
                 g.setColor(Color.black);
                 g.draw(key);
             }
             for (int i = 0; i < blackkeys.size(); i++) {
                 Key key = (Key) blackkeys.get(i);
+		if (key.isOn()){
+		    g.setColor(Color.pink);
+		    g.fill(key);
+		}
+		else{
 		g.setColor(Color.black);
 		g.fill(key);
+		}
 	    }
 	    addMouseListener(this);
 
@@ -208,12 +219,14 @@ public class Synth extends JFrame{
 	    //change color
 	    keySound(k);
 	    pressed=true;
+	    repaint();
 	}
 	
 	public void keyUnpress(Key k) {
 	    //change color back
 	    k.turnOff(k.keynum);
 	    pressed=false;
+	    repaint();
 	}
 
 	public void keySound(Key k) {
