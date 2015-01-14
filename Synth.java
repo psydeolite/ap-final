@@ -62,7 +62,6 @@ public class Synth extends JFrame{
 		    channels[i]=new Chanel(mc[i],i);
 		}
 		cc=channels[0];
-	       
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -118,12 +117,15 @@ public class Synth extends JFrame{
 	}
 	public boolean isOn() {
 	    return on;
+	  
 	}
 	public void turnOn(int pitch) {
+	    System.out.println("turn on");
 	    on=true;
 	    cc.channel.noteOn(pitch, 60);
 	}
 	public void turnOff(int pitch) {
+	    System.out.println("turn off");
 	    on=false;
 	    cc.channel.noteOff(pitch);
 	}
@@ -140,7 +142,7 @@ public class Synth extends JFrame{
 	setPreferredSize(new Dimension(600,700));
 	setBorder(BorderFactory.createLineBorder(Color.black));
 	    int keystart=60;
-	    for (int i=0, x = 0, y= 0;i<16;i++, x+=23, y+=40) {
+	    for (int i=0, x = 0, y= 0;i<17;i++, x+=23, y+=40) {
 		//makes key, starting keynum at 60 and incrementing by one
 		//adds to keys and white/black array, depending on pitch
 		if (keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70 && keystart!=73 && keystart!=75 && keystart!=78 && keystart!=81) { 
@@ -171,30 +173,41 @@ public class Synth extends JFrame{
             g.fillRect(0, 0, 520,230);
             for (int i = 0; i < whitekeys.size(); i++) {
                 Key key = (Key) whitekeys.get(i);
+		if (key.isOn()) {
+                    g.setColor(Color.blue);
+                    g.fill(key);
+                }
                 g.setColor(Color.black);
                 g.draw(key);
             }
             for (int i = 0; i < blackkeys.size(); i++) {
                 Key key = (Key) blackkeys.get(i);
+		if (key.isOn()){
+		    g.setColor(Color.pink);
+		    g.fill(key);
+		}
+		else{
 		g.setColor(Color.black);
 		g.fill(key);
+		}
 	    }
 	    addMouseListener(this);
 
 	}
 
-	public void mouseClicked(MouseEvent e) {
-	    System.out.print("erh");
-	}
+	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {
 	    pkey=getKey(e.getPoint());
+	    //System.out.println(pkey);
+	    //System.out.println(pkey.keynum);
 	    if (pkey!=null) {
-		keySound(pkey);
-		System.out.println("mouse pressed");
+		keyPress(pkey);
+		//System.out.println("mouse pressed");
 	    }
 	}
 	public void mouseReleased(MouseEvent e) {
 	    if (pkey!=null) {
+		//System.out.println("mouse released");
 		keyUnpress(pkey);
 		pkey=null;
 	    }
@@ -207,16 +220,19 @@ public class Synth extends JFrame{
 	    keySound(k);
 	    repaint();
 	    pressed=true;
+	    repaint();
 	}
 	
 	public void keyUnpress(Key k) {
 	    //change color back
 	    k.turnOff(k.keynum);
 	    pressed=false;
+	    repaint();
 	}
 
 	public void keySound(Key k) {
 	    //makes sound
+	    //System.out.println(k.keynum);
 	    k.turnOn(k.keynum);
 	}
 
@@ -227,9 +243,9 @@ public class Synth extends JFrame{
 
 	public Key getKey(Point p) {
 	    for (int i=0; i<keys.size();i++) {
-		System.out.println("enteredloop");
+		//System.out.println("enteredloop");
 		if (((Key) keys.get(i)).contains(p)) {
-		    System.out.println("gotkey");
+		    //System.out.println("gotkey");
 		    return keys.get(i);
 		}
 	    }
