@@ -119,15 +119,15 @@ public class Synth extends JFrame{
 	    return on;
 	  
 	}
-	public void turnOn(int pitch) {
-	    System.out.println("turn on");
+	public void turnOn(key k) {
+	    System.out.println("pitchOn: "+pitch);
 	    on=true;
-	    cc.channel.noteOn(pitch, 60);
+	    cc.channel.noteOn(k.keynum, 60);
 	}
-	public void turnOff(int pitch) {
-	    System.out.println("turn off");
+	public void turnOff(key k) {
+	    System.out.println("pitchOff: "+pitch);
 	    on=false;
-	    cc.channel.noteOff(pitch);
+	    cc.channel.noteOff(k.keynum);
 	}
     }
 
@@ -141,25 +141,32 @@ public class Synth extends JFrame{
 	public Piano() {
 	setPreferredSize(new Dimension(600,700));
 	setBorder(BorderFactory.createLineBorder(Color.black));
-	    int keystart=60;
-	    for (int i=0, x = 0, y= 0;i<17;i++, x+=23, y+=40) {
+	//int keystart=60;
+	    for (int i=0, x = 0, y= 0, keystart=60;i<17;i++, x+=23, y+=40,keystart++) {
 		//makes key, starting keynum at 60 and incrementing by one
 		//adds to keys and white/black array, depending on pitch
+		//System.out.println(""+keystart);
 		if (keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70 && keystart!=73 && keystart!=75 && keystart!=78 && keystart!=81) { 
 		    whitekeys.add(new Key(y,0,160,230,keystart));
+		    //System.out.println(""+keystart);
 		    //x-=12;
 		} else {
 		    if (keystart==61) {
 			blackkeys.add(new Key(26,0,25,150,keystart));
+			//System.out.println(""+keystart);
 		    } else {
 			blackkeys.add(new Key(x,0,25,150,keystart));
+			//System.out.println(""+keystart);
 		    }
 		    y-=40;
 		}
-		keystart++;
+		//	keystart++;
 	    }
 	    keys.addAll(whitekeys);
 	    keys.addAll(blackkeys);
+	    for (int i=0;i<keys.size();i++) {
+		System.out.println("key#" + i+": "+keys.get(i).keynum);
+	    }
 	}
 
 
@@ -218,16 +225,16 @@ public class Synth extends JFrame{
 	public void keyPress(Key k) {
 	    //change color
 	    keySound(k);
-	    repaint();
+	    //repaint();
 	    pressed=true;
-	    repaint();
+	    //repaint();
 	}
 	
 	public void keyUnpress(Key k) {
 	    //change color back
 	    k.turnOff(k.keynum);
 	    pressed=false;
-	    repaint();
+	    //repaint();
 	}
 
 	public void keySound(Key k) {
