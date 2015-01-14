@@ -183,6 +183,7 @@ public class Synth extends JFrame{
             for (int i = 0; i < whitekeys.size(); i++) {
                 Key key = (Key) whitekeys.get(i);
 		if (key.isOn()) {
+		    System.out.println(""+key.keynum);
                     g.setColor(Color.blue);
                     g.fill(key);
                 }
@@ -261,6 +262,8 @@ public class Synth extends JFrame{
 		//System.out.println("enteredloop");
 		if (((Key) keys.get(i)).contains(p)) {
 		    //System.out.println("gotkey");
+		   
+		    System.out.println("gotPitch: "+keys.get(i).keynum);
 		    return keys.get(i);
 		}
 	    }
