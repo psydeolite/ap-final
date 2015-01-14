@@ -148,15 +148,15 @@ public class Synth extends JFrame{
 		//System.out.println(""+keystart);
 		if (keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70 && keystart!=73 && keystart!=75 && keystart!=78 && keystart!=81) { 
 		    whitekeys.add(new Key(y,0,160,230,keystart));
-		    //System.out.println(""+keystart);
+		    System.out.println(""+keystart);
 		    //x-=12;
 		} else {
 		    if (keystart==61) {
 			blackkeys.add(new Key(26,0,25,150,keystart));
-			//System.out.println(""+keystart);
+			System.out.println(""+keystart);
 		    } else {
 			blackkeys.add(new Key(x,0,25,150,keystart));
-			//System.out.println(""+keystart);
+			System.out.println(""+keystart);
 		    }
 		    y-=40;
 		}
@@ -167,7 +167,9 @@ public class Synth extends JFrame{
 	    for (int i=0;i<keys.size();i++) {
 		System.out.println("key#" + i+": "+keys.get(i).keynum);
 	    }
+	    addMouseListener(this);
 	}
+       
 
 
 	public void paint (Graphics thing)
@@ -192,13 +194,13 @@ public class Synth extends JFrame{
 		if (key.isOn()){
 		    g.setColor(Color.pink);
 		    g.fill(key);
+		    g.draw(key);
 		}
 		else{
 		g.setColor(Color.black);
 		g.fill(key);
 		}
 	    }
-	    addMouseListener(this);
 
 	}
 
@@ -249,6 +251,12 @@ public class Synth extends JFrame{
 	}
 
 	public Key getKey(Point p) {
+	    Key r;
+	    for (int j=0; j<blackkeys.size();j++) {
+		if (((Key) blackkeys.get(j)).contains(p)) {
+		    return blackkeys.get(j);
+		}
+	    }
 	    for (int i=0; i<keys.size();i++) {
 		//System.out.println("enteredloop");
 		if (((Key) keys.get(i)).contains(p)) {
