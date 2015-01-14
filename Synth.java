@@ -119,13 +119,13 @@ public class Synth extends JFrame{
 	    return on;
 	  
 	}
-	public void turnOn(key k) {
-	    System.out.println("pitchOn: "+pitch);
+	public void turnOn(Key k) {
+	    System.out.println("pitchOn: "+k.keynum);
 	    on=true;
 	    cc.channel.noteOn(k.keynum, 60);
 	}
-	public void turnOff(key k) {
-	    System.out.println("pitchOff: "+pitch);
+	public void turnOff(Key k) {
+	    System.out.println("pitchOff: "+k.keynum);
 	    on=false;
 	    cc.channel.noteOff(k.keynum);
 	}
@@ -225,22 +225,22 @@ public class Synth extends JFrame{
 	public void keyPress(Key k) {
 	    //change color
 	    keySound(k);
-	    //repaint();
+	    repaint();
 	    pressed=true;
-	    //repaint();
+	    repaint();
 	}
 	
 	public void keyUnpress(Key k) {
 	    //change color back
-	    k.turnOff(k.keynum);
+	    k.turnOff(k);
 	    pressed=false;
-	    //repaint();
+	    repaint();
 	}
 
 	public void keySound(Key k) {
 	    //makes sound
 	    //System.out.println(k.keynum);
-	    k.turnOn(k.keynum);
+	    k.turnOn(k);
 	}
 
 	public void keyRecord(Key k) {
