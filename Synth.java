@@ -80,11 +80,7 @@ public class Synth extends JFrame{
     }
     
     
-    public static void main(String[] args) {
-	Synth s=new Synth();
-	s.setVisible(true);
-	s.open();
-    }
+  
     
     class Controls {
 	//buttons here
