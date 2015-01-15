@@ -187,7 +187,7 @@ public class Synth extends JFrame{
 		Key key = (Key) whitekeys.get(i);
 		if (key.isOn()) {
 		    //System.out.println(""+key.keynum);
-		    g.setColor(Color.blue);
+		    g.setColor(Color.cyan);
 		    g.fill(key);
 		}
 		g.setColor(Color.black);
