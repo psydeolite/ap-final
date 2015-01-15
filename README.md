@@ -27,4 +27,5 @@ Changes
 01/12 - Made piano bigger and Mariya worked on the mouselistener - RA
  <br/>
 01/13 - Fixed NullPointerException Error, adjusted piano keys, fixed keypress things - MG <br/>
-01/13 - Added repaint function and had the piano actually respon to clicks and play keys! - RA
+01/13 - Added repaint function and had the piano actually respon to clicks and play keys! - RA <br/>
+01/13 - Error fix: individual white keys respond to clicks -MG
