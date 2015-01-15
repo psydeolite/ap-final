@@ -10,7 +10,7 @@ import javax.swing.*;
 
 public class Synth extends JFrame{
     Synthesizer syn; //MidiSystem.getSynthesizer();
-    Sequence seq;
+    Sequencer seqr;
     Piano piano;
     Chanel[] channels;
     Chanel cc;
@@ -50,6 +50,7 @@ public class Synth extends JFrame{
 		return;
 	    } else {
 		syn.open();
+		seqr=MidiSystem.getSequencer();
 		Soundbank s=syn.getDefaultSoundbank();
 		if (s!=null) {
 		    instruments=syn.getDefaultSoundbank().getInstruments();
