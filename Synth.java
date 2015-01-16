@@ -11,10 +11,15 @@ import javax.swing.*;
 public class Synth extends JFrame{
     Synthesizer syn; //MidiSystem.getSynthesizer();
     Sequencer seqr;
+    Sequence seq;
     Piano piano;
     Chanel[] channels;
     Chanel cc;
     Instrument[] instruments;
+    boolean recording;
+    long stime;
+    Track track;
+    Recorder recorder;
     private Container pane;
     private JPanel canvas;
     private JButton record,play,stop,save;
@@ -50,6 +55,7 @@ public class Synth extends JFrame{
 		return;
 	    } else {
 		syn.open();
+		seq=new Sequence(Sequence.PPQ, 10);
 		seqr=MidiSystem.getSequencer();
 		Soundbank s=syn.getDefaultSoundbank();
 		if (s!=null) {
@@ -79,9 +85,40 @@ public class Synth extends JFrame{
 	channels=null;
     }
     
-    
-  
-    
+    public void addEvent(boolean on, Key k) {
+	ShortMessage m=new ShortMessage();
+	long dur=System.currentTimeMillis()-stime;
+	long tic=dur*seq.getResolution()/500;
+	try {
+	    if (on) {
+		m.setMessage(ShortMessage.NOTE_ON, 0, k.keynum, 60);
+	    } else {
+		m.setMessage(ShortMessage.NOTE_OFF, 0, k.keynum, 60);
+	    }
+	} catch (InvalidMidiDataException e) {
+	    e.printStackTrace();
+	}
+	MidiEvent me = new MidiEvent(m, tic);
+	track.add(me);
+    }
+
+    class Recorder {
+	public void startRecord() {
+	    try {
+		seqr.setSequence(seq);
+	    } catch (InvalidMidiDataException e) {
+		e.printStackTrace();
+	    }
+	    seqr.recordEnable(track,cc.channelnum);
+	    stime=System.currentTimeMillis();
+	    seqr.startRecording();
+	}
+
+	public void stopRecord() {
+	    seqr.stopRecording();
+	}
+    }
+
     class Controls {
 	//buttons here
     }

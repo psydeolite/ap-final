@@ -29,3 +29,4 @@ Changes
 01/13 - Fixed NullPointerException Error, adjusted piano keys, fixed keypress things - MG <br/>
 01/13 - Added repaint function and had the piano actually respon to clicks and play keys! - RA <br/>
 01/14 - Error fix: individual white keys respond to clicks - MG
+01/15 - wrote addEvent (to be continued...) and created Recorder class with startRecording and stopRecording functions - MG <br/>
