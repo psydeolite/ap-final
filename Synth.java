@@ -43,7 +43,19 @@ public class Synth extends JFrame{
 	JPanel rect = new JPanel (new BorderLayout());
 	rect.add(piano = new Piano());
 	pane.add(rect);
-	//	rect.add(piano = new Piano());
+	String[] names = {"Instrument", "On"};
+
+        Object[][] data = {
+            {"Piano", new Boolean(false)},
+            {"Guitar", new Boolean(true)},
+            {"Violin",  new Boolean(false)},
+            {"Trumpet",  new Boolean(true)},
+            {"Flute",  new Boolean(false)}
+        };
+	JTable table = new JTable(data, names);
+JScrollPane scrollPane = new JScrollPane(table);
+table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+	pane.add(table);
 
     }
 
