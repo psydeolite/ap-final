@@ -1,4 +1,4 @@
-Synthesizer
+Do-Re-Midi Synthesizer
 ========
 
 Mariya Gedrich and Rabia Akhtar Period 2
