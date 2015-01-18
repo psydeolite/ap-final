@@ -27,11 +27,10 @@ public class Synth extends JFrame{
 
     public Synth() {
         JFrame a = new JFrame("Do-Re-Midi");
-	a.setSize(700, 700);
 	a.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	Box one = Box.createHorizontalBox();
         Box two = Box.createHorizontalBox();
-        JPanel three = new JPanel(new BorderLayout());
+        JPanel three = new JPanel(new FlowLayout());
         record = new JButton ("Record");
 	play = new JButton ("Play");
 	stop = new JButton ("Stop");
