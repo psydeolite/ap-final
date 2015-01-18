@@ -7,7 +7,6 @@ import javax.sound.midi.MidiChannel;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-
 public class Synth extends JFrame{
     Synthesizer syn; //MidiSystem.getSynthesizer();
     Sequencer seqr;
@@ -23,40 +22,44 @@ public class Synth extends JFrame{
     private Container pane;
     private JPanel canvas;
     private JButton record,play,stop,save;
+    private JCheckBox p,guitar,violin,trumpet,flute;
     private JLabel label;
 
     public Synth() {
-	setTitle("Synth");
-	setSize(700,700);
-	setLocation(100,100);
-	setDefaultCloseOperation(EXIT_ON_CLOSE);
-	pane=getContentPane();
-	pane.setLayout(new FlowLayout());
-	record = new JButton ("Record");
-	pane.add(record);
+        JFrame a = new JFrame("Do-Re-Midi");
+	a.setSize(700, 700);
+	a.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	Box one = Box.createHorizontalBox();
+        Box two = Box.createHorizontalBox();
+        JPanel three = new JPanel(new BorderLayout());
+        record = new JButton ("Record");
 	play = new JButton ("Play");
-	pane.add(play);
 	stop = new JButton ("Stop");
-	pane.add(stop);
 	save = new JButton ("Save");
-	pane.add(save);
-	JPanel rect = new JPanel (new BorderLayout());
-	rect.add(piano = new Piano());
-	pane.add(rect);
-	String[] names = {"Instrument", "On"};
-
-        Object[][] data = {
-            {"Piano", new Boolean(false)},
-            {"Guitar", new Boolean(true)},
-            {"Violin",  new Boolean(false)},
-            {"Trumpet",  new Boolean(true)},
-            {"Flute",  new Boolean(false)}
-        };
-	JTable table = new JTable(data, names);
-JScrollPane scrollPane = new JScrollPane(table);
-table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-	pane.add(table);
-
+	one.add(record);
+	one.add(play);
+	one.add(stop);
+	one.add(save);
+	p  = new JCheckBox ("Piano");
+	guitar = new JCheckBox ("Guitar");
+	violin = new JCheckBox ("Violin");
+	trumpet = new JCheckBox ("Trumpet");
+	flute = new JCheckBox("Flute");
+	two.add(p);
+	two.add(guitar);
+	two.add(violin);
+	two.add(trumpet);
+	two.add(flute);
+	three.add(piano = new Piano());
+	Box top = Box.createVerticalBox();
+	top.add(one);
+	top.add(two);
+	top.add(three);
+	Container content = a.getContentPane();
+	content.setLayout(new BorderLayout());
+	content.add(top, BorderLayout.CENTER);
+	a.pack();
+	a.setVisible(true);
     }
 
     public void open() {
