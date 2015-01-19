@@ -21,15 +21,16 @@ public class Synth extends JFrame{
     Recorder recorder;
     private Container pane;
     private JPanel canvas;
-    private JButton record,play,stop,save;
-    private JCheckBox p,guitar,violin,trumpet,flute;
+    private JButton record, srecord,play,stop,save;
+    private ButtonGroup instrumentz;
+    private JRadioButton p,guitar,violin,trumpet,flute;
     private JLabel label;
 
     public Synth() {
         JFrame a = new JFrame("Do-Re-Midi");
 	a.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	Box one = Box.createHorizontalBox();
-        Box two = Box.createHorizontalBox();
+        Box two = Box.createVerticalBox();
         JPanel three = new JPanel(new FlowLayout());
         record = new JButton ("Record");
 	play = new JButton ("Play");
@@ -39,16 +40,17 @@ public class Synth extends JFrame{
 	one.add(play);
 	one.add(stop);
 	one.add(save);
-	p  = new JCheckBox ("Piano");
-	guitar = new JCheckBox ("Guitar");
-	violin = new JCheckBox ("Violin");
-	trumpet = new JCheckBox ("Trumpet");
-	flute = new JCheckBox("Flute");
-	two.add(p);
-	two.add(guitar);
-	two.add(violin);
-	two.add(trumpet);
-	two.add(flute);
+	instrumentz=new ButtonGroup();
+	p  = new JRadioButton ("Piano");
+	guitar = new JRadioButton ("Guitar");
+	violin = new JRadioButton ("Violin");
+	trumpet = new JRadioButton ("Trumpet");
+	flute = new JRadioButton("Flute");
+	instrumentz.add(p); two.add(p);
+	instrumentz.add(guitar); two.add(guitar);
+	instrumentz.add(violin); two.add(violin);
+	instrumentz.add(trumpet); two.add(trumpet);
+	instrumentz.add(flute); two.add(flute);
 	three.add(piano = new Piano());
 	Box top = Box.createVerticalBox();
 	top.add(one);
@@ -116,8 +118,14 @@ public class Synth extends JFrame{
 	track.add(me);
     }
 
-    class Recorder {
+    class Recorder implements ActionListener {
+	record.addActionListener(this);
+	public void actionPerformed(ActionEvent a) {
+	    System.out.println("actionperformed");
+	    startRecord();
+	}
 	public void startRecord() {
+	    System.out.println("startrecord");
 	    try {
 		seqr.setSequence(seq);
 	    } catch (InvalidMidiDataException e) {
