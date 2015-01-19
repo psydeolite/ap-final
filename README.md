@@ -30,4 +30,5 @@ Changes
 01/13 - Added repaint function and had the piano actually respon to clicks and play keys! - RA <br/>
 01/14 - Error fix: individual white keys respond to clicks - MG <br/>
 01/15 - wrote addEvent (to be continued...) and created Recorder class with startRecording and stopRecording functions - MG <br/>
-01/18 - spent 5 hours uselessly trying to figure out layouts - RA
+01/18 - spent 5 hours uselessly trying to figure out layouts - RA <br/>
+01/19 - fixed layout formatting, recording and playback now works. however, multi-voice recording does not. -MG <br/>
