@@ -16,30 +16,25 @@ public class Synth extends JFrame{
     Chanel cc;
     Instrument[] instruments;
     boolean recording;
+    boolean playing;
     long stime;
     Track track;
     Recorder recorder;
+    InstrumentTable instrumentable;
     private Container pane;
     private JPanel canvas;
-    private JButton record, srecord,play,stop,save;
-    private ButtonGroup instrumentz;
-    private JRadioButton p,guitar,violin,trumpet,flute;
+    //private JButton record, srecord,play,stop,save;
+    //private ButtonGroup instrumentz;
+    //private JRadioButton p,guitar,violin,trumpet,flute;
     private JLabel label;
 
     public Synth() {
         JFrame a = new JFrame("Do-Re-Midi");
 	a.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	Box one = Box.createHorizontalBox();
-        Box two = Box.createVerticalBox();
+	//Box one = Box.createHorizontalBox();
+        //Box two = Box.createVerticalBox();
         JPanel three = new JPanel(new FlowLayout());
-        record = new JButton ("Record");
-	play = new JButton ("Play");
-	stop = new JButton ("Stop");
-	save = new JButton ("Save");
-	one.add(record);
-	one.add(play);
-	one.add(stop);
-	one.add(save);
+	/*
 	instrumentz=new ButtonGroup();
 	p  = new JRadioButton ("Piano");
 	guitar = new JRadioButton ("Guitar");
@@ -51,10 +46,13 @@ public class Synth extends JFrame{
 	instrumentz.add(violin); two.add(violin);
 	instrumentz.add(trumpet); two.add(trumpet);
 	instrumentz.add(flute); two.add(flute);
+	*/
 	three.add(piano = new Piano());
+	instrumentable=new InstrumentTable();
+	recorder=new Recorder();
 	Box top = Box.createVerticalBox();
-	top.add(one);
-	top.add(two);
+	top.add(instrumentable.getBox());
+	top.add(recorder.getBox());
 	top.add(three);
 	Container content = a.getContentPane();
 	content.setLayout(new BorderLayout());
@@ -73,6 +71,7 @@ public class Synth extends JFrame{
 		syn.open();
 		seq=new Sequence(Sequence.PPQ, 10);
 		seqr=MidiSystem.getSequencer();
+		//seqr.open();
 		Soundbank s=syn.getDefaultSoundbank();
 		if (s!=null) {
 		    instruments=syn.getDefaultSoundbank().getInstruments();
@@ -101,11 +100,11 @@ public class Synth extends JFrame{
 	channels=null;
     }
     
-    public void addEvent(boolean on, Key k) {
+    public void addNoteEvent(boolean on, Key k) {
 	ShortMessage m=new ShortMessage();
 	long dur=System.currentTimeMillis()-stime;
 	long tic=dur*seq.getResolution()/500;
-	try {
+	/* try {
 	    if (on) {
 		m.setMessage(ShortMessage.NOTE_ON, 0, k.keynum, 60);
 	    } else {
@@ -113,39 +112,121 @@ public class Synth extends JFrame{
 	    }
 	} catch (InvalidMidiDataException e) {
 	    e.printStackTrace();
-	}
+	    }*/
 	MidiEvent me = new MidiEvent(m, tic);
 	track.add(me);
     }
 
     class Recorder implements ActionListener {
-	record.addActionListener(this);
-	public void actionPerformed(ActionEvent a) {
-	    System.out.println("actionperformed");
-	    startRecord();
+	Box one=Box.createHorizontalBox();
+	JButton record=new JButton("Record");
+	//JButton srecord=new JButton("Stop");
+	JButton play =new JButton("Play");
+	public Recorder() {
+	    record.addActionListener(this);
+	    one.add(record);
+	    //srecord.addActionListener(this);
+	    //one.add(srecord);
+	    play.addActionListener(this);
+	    one.add(play);
 	}
+	public Box getBox() {
+	    return one;
+	}
+	public void actionPerformed(ActionEvent a) {
+	    JButton button = (JButton) a.getSource();
+	    //System.out.println("actionperformed");
+	    if (button.equals(play)) {
+		if (!playing) {
+		    if (track!=null) {
+			play.setText("Stop");
+			startPlay();
+			record.setEnabled(false);
+		    } else {
+			System.out.println("can't play track, null");
+		    }
+		} else {
+		    play.setText("Play");
+		    stopPlay();
+		    record.setEnabled(true);
+		}
+	    }
+	    else if (button.equals(record)) {
+		if (recording) {
+		    record.setText("Record");
+		    stopRecord();
+		    play.setEnabled(true);
+		} else {
+		    record.setText("Stop");
+		    startRecord();
+		    play.setEnabled(false);
+		}
+	    }
+	}
+	
+		
 	public void startRecord() {
 	    System.out.println("startrecord");
 	    try {
+		seqr.open();
 		seqr.setSequence(seq);
-	    } catch (InvalidMidiDataException e) {
+	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
+	    track=seq.createTrack();
 	    seqr.recordEnable(track,cc.channelnum);
 	    stime=System.currentTimeMillis();
-	    seqr.startRecording();
+	    //seqr.startRecording();
+	    recording=true;
 	}
 
 	public void stopRecord() {
-	    seqr.stopRecording();
+	    System.out.println("stoprecord");
+	    //seqr.stopRecording();
+	    recording=false;
 	}
-    }
 
-    class Controls {
-	//buttons here
+	public void startPlay() {
+	    playing=true;
+	    System.out.println("startplay");
+	    try {
+		seqr.open();
+		seqr.setSequence(seq);
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
+	    seqr.start();
+	}
+
+	public void stopPlay() {
+	    System.out.println("stopplay");
+	    playing=false;
+	    seqr.stop();
+	}
     }
     
     class InstrumentTable {
+	Box two = Box.createVerticalBox();
+	JRadioButton piano  = new JRadioButton ("Piano");
+	JRadioButton guitar = new JRadioButton ("Guitar");
+	JRadioButton violin = new JRadioButton ("Violin");
+	JRadioButton trumpet = new JRadioButton ("Trumpet");
+	JRadioButton flute = new JRadioButton("Flute");
+	ButtonGroup instrumentz= new ButtonGroup();
+	public InstrumentTable() {    
+	    instrumentz.add(guitar); 
+	    two.add(guitar);
+	    instrumentz.add(violin); 
+	    two.add(violin);
+	    instrumentz.add(trumpet); 
+	    two.add(trumpet);
+	    instrumentz.add(flute); 
+	    two.add(flute);
+	}
+
+	public Box getBox() {
+	    return two;
+	}
 	//instrument selection
     }
     
@@ -179,11 +260,17 @@ public class Synth extends JFrame{
 	    System.out.println("pitchOn: "+k.keynum);
 	    on=true;
 	    cc.channel.noteOn(k.keynum, 60);
+	    if (recording) {
+		addNoteEvent(on, k);
+	    }
 	}
 	public void turnOff(Key k) {
 	    System.out.println("pitchOff: "+k.keynum);
 	    on=false;
 	    cc.channel.noteOff(k.keynum);
+	    if (recording) {
+		addNoteEvent(on, k);
+	    }
 	}
     }
     
