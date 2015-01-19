@@ -104,7 +104,7 @@ public class Synth extends JFrame{
 	ShortMessage m=new ShortMessage();
 	long dur=System.currentTimeMillis()-stime;
 	long tic=dur*seq.getResolution()/500;
-	/* try {
+	 try {
 	    if (on) {
 		m.setMessage(ShortMessage.NOTE_ON, 0, k.keynum, 60);
 	    } else {
@@ -112,7 +112,7 @@ public class Synth extends JFrame{
 	    }
 	} catch (InvalidMidiDataException e) {
 	    e.printStackTrace();
-	    }*/
+	 }
 	MidiEvent me = new MidiEvent(m, tic);
 	track.add(me);
     }
@@ -122,6 +122,7 @@ public class Synth extends JFrame{
 	JButton record=new JButton("Record");
 	//JButton srecord=new JButton("Stop");
 	JButton play =new JButton("Play");
+	ArrayList tracks=new ArrayList();
 	public Recorder() {
 	    record.addActionListener(this);
 	    one.add(record);
@@ -174,6 +175,8 @@ public class Synth extends JFrame{
 		e.printStackTrace();
 	    }
 	    track=seq.createTrack();
+	    tracks.add(track);
+	    System.out.println(tracks.size());
 	    seqr.recordEnable(track,cc.channelnum);
 	    stime=System.currentTimeMillis();
 	    //seqr.startRecording();
