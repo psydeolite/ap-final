@@ -7,6 +7,8 @@ import javax.sound.midi.MidiChannel;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.table.TableColumn;
+
 public class Synth extends JFrame{
     Synthesizer syn; //MidiSystem.getSynthesizer();
     Sequencer seqr;
@@ -29,38 +31,26 @@ public class Synth extends JFrame{
     private JLabel label;
 
     public Synth() {
-        JFrame a = new JFrame("Do-Re-Midi");
-	a.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame frame = new JFrame("Do-Re-Midi");
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	//Box one = Box.createHorizontalBox();
         //Box two = Box.createVerticalBox();
-        JPanel three = new JPanel(new FlowLayout());
-	/*
-	instrumentz=new ButtonGroup();
-	p  = new JRadioButton ("Piano");
-	guitar = new JRadioButton ("Guitar");
-	violin = new JRadioButton ("Violin");
-	trumpet = new JRadioButton ("Trumpet");
-	flute = new JRadioButton("Flute");
-	instrumentz.add(p); two.add(p);
-	instrumentz.add(guitar); two.add(guitar);
-	instrumentz.add(violin); two.add(violin);
-	instrumentz.add(trumpet); two.add(trumpet);
-	instrumentz.add(flute); two.add(flute);
-	*/
-	three.add(piano = new Piano());
+        JPanel topbox = new JPanel(new FlowLayout());
+	topbox.add(piano = new Piano());
 	instrumentable=new InstrumentTable();
 	recorder=new Recorder();
-	Box top = Box.createVerticalBox();
-	top.add(instrumentable.getBox());
-	top.add(recorder.getBox());
-	top.add(three);
-	Container content = a.getContentPane();
+	Box whole = Box.createVerticalBox();
+	whole.add(topbox);
+	whole.add(recorder.getBox());
+	whole.add(instrumentable.getBox());
+	Container content = frame.getContentPane();
 	content.setLayout(new BorderLayout());
-	content.add(top, BorderLayout.CENTER);
-	a.pack();
-	a.setVisible(true);
+	content.add(whole, BorderLayout.CENTER);
+	frame.pack();
+	frame.setVisible(true);
     }
 
+    
     public void open() {
 	try {
 	    syn=MidiSystem.getSynthesizer();
@@ -120,14 +110,14 @@ public class Synth extends JFrame{
     class Recorder implements ActionListener {
 	Box one=Box.createHorizontalBox();
 	JButton record=new JButton("Record");
-	//JButton srecord=new JButton("Stop");
+	JButton clear=new JButton("Clear");
 	JButton play =new JButton("Play");
 	ArrayList tracks=new ArrayList();
 	public Recorder() {
 	    record.addActionListener(this);
 	    one.add(record);
-	    //srecord.addActionListener(this);
-	    //one.add(srecord);
+	    clear.addActionListener(this);
+	    one.add(clear);
 	    play.addActionListener(this);
 	    one.add(play);
 	}
@@ -151,8 +141,7 @@ public class Synth extends JFrame{
 		    stopPlay();
 		    record.setEnabled(true);
 		}
-	    }
-	    else if (button.equals(record)) {
+	    } else if (button.equals(record)) {
 		if (recording) {
 		    record.setText("Record");
 		    stopRecord();
@@ -162,6 +151,10 @@ public class Synth extends JFrame{
 		    startRecord();
 		    play.setEnabled(false);
 		}
+	    } else if (button.equals(clear)) {
+		if (track.size()!=0) {
+		    clearTrack();
+		} 
 	    }
 	}
 	
@@ -206,29 +199,45 @@ public class Synth extends JFrame{
 	    playing=false;
 	    seqr.stop();
 	}
+
+	public void clearTrack() {
+	    while (track.size()>0) {
+		track.remove(track.get(0));
+	    }
+	}
     }
     
     class InstrumentTable {
-	Box two = Box.createVerticalBox();
-	JRadioButton piano  = new JRadioButton ("Piano");
+	Box box = Box.createVerticalBox();
+	/*JRadioButton piano  = new JRadioButton ("Piano");
 	JRadioButton guitar = new JRadioButton ("Guitar");
 	JRadioButton violin = new JRadioButton ("Violin");
 	JRadioButton trumpet = new JRadioButton ("Trumpet");
 	JRadioButton flute = new JRadioButton("Flute");
-	ButtonGroup instrumentz= new ButtonGroup();
+	ButtonGroup instrumentz= new ButtonGroup();*/
 	public InstrumentTable() {    
-	    instrumentz.add(guitar); 
-	    two.add(guitar);
+	    /*instrumentz.add(guitar); 
+	    box.add(guitar);
 	    instrumentz.add(violin); 
-	    two.add(violin);
+	    box.add(violin);
 	    instrumentz.add(trumpet); 
-	    two.add(trumpet);
+	    box.add(trumpet);
 	    instrumentz.add(flute); 
-	    two.add(flute);
+	    box.add(flute);*/
+	    table.setShowGrid(true);
+	    TableColumn c=table.getColumnModel().getColumn(0);
+	    box.add(table);
+	    c.setPreferredWidth(5);
+	    //box.add(table);
 	}
-
+	
+	String[] columnName={"Instruments"};
+	Object[][] data = { 
+	    {"Piano"}, {"Guitar"}, {"Violin"}, {"Trumpet"}, {"Flute"}
+	};
+	JTable table=new JTable(data,columnName);
 	public Box getBox() {
-	    return two;
+	    return box;
 	}
 	//instrument selection
     }
@@ -324,8 +333,10 @@ public class Synth extends JFrame{
 	{
 	    Graphics2D g = (Graphics2D) thing;
 	    Dimension d = getSize();
+	    System.out.println("dimension: "+d);
 	    g.setBackground(getBackground());
 	    g.clearRect(0, 0, 5000, 700);
+	    //g.clearRect(0,0,520,700);
 	    g.setColor(Color.white);
 	    g.fillRect(0, 0, 520,230);
 	    for (int i = 0; i < whitekeys.size(); i++) {
