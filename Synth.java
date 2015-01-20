@@ -1,3 +1,7 @@
+/* --------
+Rabia Akhtar and Mariya Gedrich  */ 
+
+
 import java.io.*;
 import java.util.*;
 import javax.sound.midi.*;
@@ -40,7 +44,7 @@ public class Synth extends JFrame{
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	//Box one = Box.createHorizontalBox();
         //Box two = Box.createVerticalBox();
-        JPanel topbox = new JPanel(new FlowLayout());
+        JPanel topbox = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	topbox.add(piano = new Piano());
 	instrumentable=new InstrumentTable();
 	recorder=new Recorder();
@@ -311,6 +315,9 @@ public class Synth extends JFrame{
 	//JTable table=new JTable(data,columnName);
 	
 	    JTable table=new JTable(model);
+            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            TableColumn c = table.getColumnModel().getColumn(0);
+            c.setPreferredWidth(5);
 	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    box.add(table);
 
@@ -398,7 +405,7 @@ public class Synth extends JFrame{
 	Key pkey;
 	
 	public Piano() {
-	    setPreferredSize(new Dimension(600,700));
+	    setPreferredSize(new Dimension(600,280));
 	    setBorder(BorderFactory.createLineBorder(Color.black));
 	    //int keystart=60;
 	    for (int i=0, x = 0, y= 0, keystart=60;i<22;i++, x+=23, y+=40,keystart++) {
@@ -439,7 +446,7 @@ public class Synth extends JFrame{
 	    Dimension d = getSize();
 	    System.out.println("dimension: "+d);
 	    g.setBackground(getBackground());
-	    g.clearRect(0, 0, 5000, 700);
+	    g.clearRect(0, 0, 500, 700);
 	    //g.clearRect(0,0,520,700);
 	    g.setColor(Color.white);
 	    g.fillRect(0, 0, 520,230);
