@@ -7,9 +7,12 @@ import javax.sound.midi.MidiChannel;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.table.TableColumn;
+import javax.swing.table.*;
 
 public class Synth extends JFrame{
+    final int PROGRAM = 192;
+    final int NOTEON = 144;
+    final int NOTEOFF = 128;
     Synthesizer syn; //MidiSystem.getSynthesizer();
     Sequencer seqr;
     Sequence seq;
@@ -41,9 +44,11 @@ public class Synth extends JFrame{
 	instrumentable=new InstrumentTable();
 	recorder=new Recorder();
 	Box whole = Box.createVerticalBox();
-	whole.add(topbox);
-	whole.add(recorder.getBox());
 	whole.add(instrumentable.getBox());
+	whole.add(recorder.getBox());
+	whole.add(topbox);
+	//whole.add(recorder.getBox());
+	//whole.add(instrumentable.getBox());
 	Container content = frame.getContentPane();
 	content.setLayout(new BorderLayout());
 	content.add(whole, BorderLayout.CENTER);
@@ -91,21 +96,25 @@ public class Synth extends JFrame{
 	channels=null;
     }
     
-    public void addNoteEvent(boolean on, Key k) {
+    public void addEvent(int command, int n) {
 	ShortMessage m=new ShortMessage();
 	long dur=System.currentTimeMillis()-stime;
 	long tic=dur*seq.getResolution()/500;
 	 try {
-	    if (on) {
+	    m.setMessage(command,0,n,60);
+	    /*if (on) {
 		m.setMessage(ShortMessage.NOTE_ON, 0, k.keynum, 60);
 	    } else {
 		m.setMessage(ShortMessage.NOTE_OFF, 0, k.keynum, 60);
 	    }
 	} catch (InvalidMidiDataException e) {
 	    e.printStackTrace();
+	    }*/
+	    MidiEvent me = new MidiEvent(m, tic);
+	    track.add(me);
+	 } catch (Exception e) {
+	     e.printStackTrace();
 	 }
-	MidiEvent me = new MidiEvent(m, tic);
-	track.add(me);
     }
 
     class Recorder implements ActionListener {
@@ -255,37 +264,64 @@ public class Synth extends JFrame{
     }
     
     class InstrumentTable {
+	private int rownum=10;
+	private int colnum=1;
 	Box box = Box.createVerticalBox();
-	/*JRadioButton piano  = new JRadioButton ("Piano");
-	JRadioButton guitar = new JRadioButton ("Guitar");
-	JRadioButton violin = new JRadioButton ("Violin");
-	JRadioButton trumpet = new JRadioButton ("Trumpet");
-	JRadioButton flute = new JRadioButton("Flute");
-	ButtonGroup instrumentz= new ButtonGroup();*/
-	public InstrumentTable() {    
-	    /*instrumentz.add(guitar); 
-	    box.add(guitar);
-	    instrumentz.add(violin); 
-	    box.add(violin);
-	    instrumentz.add(trumpet); 
-	    box.add(trumpet);
-	    instrumentz.add(flute); 
-	    box.add(flute);*/
-	    table.setShowGrid(true);
-	    TableColumn c=table.getColumnModel().getColumn(0);
-	    box.add(table);
-	    c.setPreferredWidth(5);
-	    //box.add(table);
-	}
-	
 	String[] columnName={"Instruments"};
 	Object[][] data = { 
 	    {"Piano"}, {"Guitar"}, {"Violin"}, {"Trumpet"}, {"Flute"}
 	};
-	JTable table=new JTable(data,columnName);
+	public InstrumentTable() {    
+	    //table.setShowGrid(true);
+	    //TableColumn c=table.getColumnModel().getColumn(0);
+	    //box.add(table);
+	    //c.setPreferredWidth(5);
+	    //box.add(table);
+	 
+	    TableModel model = new AbstractTableModel() {
+		    public int getRowCount() {
+			return rownum;
+		    }
+		    public int getColumnCount() {
+			return colnum;
+		    }
+		    public Object getValueAt(int row, int col) {
+			if (instruments!=null) {
+			    return instruments[row].getName();
+			} else {
+			    return Integer.toString(0);
+			}
+		    }
+		    public String getColumnName(int col) {return columnName[col];}
+		    public Class getColumnClass(int col) {return getValueAt(0,col).getClass();}
+		    public boolean isCellEditable(int row, int col) { 
+			return false;
+		    }
+		    public void setValueAt(Object obj,int row, int col) {}
+		};
+	
+	//JTable table=new JTable(data,columnName);
+	
+	    JTable table=new JTable(model);
+	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    box.add(table);
+	}
 	public Box getBox() {
 	    return box;
 	}
+	/*
+	public void changeProgram() {
+	    if (instruments!=null) {
+		syn.loadInstrument(instruments[ci]);
+	    } else {
+		System.out.println("no instruments to speak of");
+	    }
+	    cc.channel.programChange(ci);
+	    if (record) {
+		addEvent(PROGRAM,ci);
+	    }
+	}
+	*/  
 	//instrument selection
     }
     
@@ -320,7 +356,7 @@ public class Synth extends JFrame{
 	    on=true;
 	    cc.channel.noteOn(k.keynum, 60);
 	    if (recording) {
-		addNoteEvent(on, k);
+		addEvent(NOTEON, k.keynum);
 	    }
 	}
 	public void turnOff(Key k) {
@@ -328,7 +364,7 @@ public class Synth extends JFrame{
 	    on=false;
 	    cc.channel.noteOff(k.keynum);
 	    if (recording) {
-		addNoteEvent(on, k);
+		addEvent(NOTEOFF, k.keynum);
 	    }
 	}
     }
