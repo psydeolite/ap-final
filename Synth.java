@@ -1,3 +1,7 @@
+/* --------
+Rabia Akhtar and Mariya Gedrich  */ 
+
+
 import java.io.*;
 import java.util.*;
 import javax.sound.midi.*;
