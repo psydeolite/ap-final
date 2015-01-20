@@ -29,9 +29,10 @@ public class Synth extends JFrame{
     //private ButtonGroup instrumentz;
     //private JRadioButton p,guitar,violin,trumpet,flute;
     private JLabel label;
+    private JFrame frame;
 
     public Synth() {
-        JFrame frame = new JFrame("Do-Re-Midi");
+        frame = new JFrame("Do-Re-Midi");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	//Box one = Box.createHorizontalBox();
         //Box two = Box.createVerticalBox();
@@ -112,6 +113,7 @@ public class Synth extends JFrame{
 	JButton record=new JButton("Record");
 	JButton clear=new JButton("Clear");
 	JButton play =new JButton("Play");
+	JButton save=new JButton("Save");
 	ArrayList tracks=new ArrayList();
 	public Recorder() {
 	    record.addActionListener(this);
@@ -120,6 +122,8 @@ public class Synth extends JFrame{
 	    one.add(clear);
 	    play.addActionListener(this);
 	    one.add(play);
+	    save.addActionListener(this);
+	    one.add(save);
 	}
 	public Box getBox() {
 	    return one;
@@ -133,6 +137,8 @@ public class Synth extends JFrame{
 			play.setText("Stop");
 			startPlay();
 			record.setEnabled(false);
+			clear.setEnabled(false);
+			save.setEnabled(false);
 		    } else {
 			System.out.println("can't play track, null");
 		    }
@@ -140,25 +146,66 @@ public class Synth extends JFrame{
 		    play.setText("Play");
 		    stopPlay();
 		    record.setEnabled(true);
+		    clear.setEnabled(true);
+		    save.setEnabled(true);
 		}
 	    } else if (button.equals(record)) {
 		if (recording) {
 		    record.setText("Record");
 		    stopRecord();
 		    play.setEnabled(true);
+		    clear.setEnabled(true);
+		    save.setEnabled(true);
 		} else {
 		    record.setText("Stop");
 		    startRecord();
 		    play.setEnabled(false);
+		    clear.setEnabled(false);
+		    save.setEnabled(false);
 		}
 	    } else if (button.equals(clear)) {
 		if (track.size()!=0) {
 		    clearTrack();
 		} 
+	    } else if (button.equals(save)) {
+		try {
+		    save();
+		} catch (Exception e) {}
 	    }
 	}
 	
-		
+	public void save() {
+	    System.out.println("save");
+	    File f=new File("file.mid");
+	    JFileChooser fc=new JFileChooser(f);
+	    fc.setFileFilter(new javax.swing.filechooser.FileFilter() {
+		    public boolean accept(File ff) {
+			if (ff.isDirectory()) {
+			    return true;
+			}
+			return false;
+		    }
+		    public String getDescription() {
+			return "Save as .mid file";
+		    }
+		});
+	    int returnVal=fc.showSaveDialog(frame);
+	    if (returnVal==JFileChooser.APPROVE_OPTION) {
+		File rf=fc.getSelectedFile();
+		try {
+		    int[] types=MidiSystem.getMidiFileTypes(seq);
+		    if (types.length!=0) {
+			if (MidiSystem.write(seq,types[0],rf)==-1) {
+			    throw new IOException("problems writing file");
+			}
+		    } else {
+			System.out.println("can't save this");
+		    }
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	}
 	public void startRecord() {
 	    System.out.println("startrecord");
 	    try {
