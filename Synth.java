@@ -26,6 +26,7 @@ public class Synth extends JFrame{
     Track track;
     Recorder recorder;
     InstrumentTable instrumentable;
+    int ci;
     private Container pane;
     private JPanel canvas;
     //private JButton record, srecord,play,stop,save;
@@ -77,6 +78,7 @@ public class Synth extends JFrame{
 		    instruments[2]=instrumentlist[41];
 		    instruments[3]=instrumentlist[57];
 		    instruments[4]=instrumentlist[81];
+		    //ci=instruments[0];
 		    syn.loadInstrument(instruments[0]);
 		}
 		MidiChannel mc[]=syn.getChannels();
@@ -311,23 +313,36 @@ public class Synth extends JFrame{
 	    JTable table=new JTable(model);
 	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    box.add(table);
+
+	    ListSelectionModel lsm = table.getSelectionModel();
+	    lsm.addListSelectionListener(new ListSelectionListener() {
+		    public void valueChanged(ListSelectionEvent e) {
+			ListSelectionModel sm=(ListSelectionModel) e.getSource();
+			if (!sm.isSelectionEmpty()) {
+			    changeProgram(ci);
+			} else {
+			    changeProgram(sm.getMinSelectionIndex());
+			}
+		    }
+		});
 	}
+	
 	public Box getBox() {
 	    return box;
 	}
-	/*
-	public void changeProgram() {
+	
+	public void changeProgram(int select) {
 	    if (instruments!=null) {
-		syn.loadInstrument(instruments[ci]);
+		syn.loadInstrument(instruments[select]);
 	    } else {
 		System.out.println("no instruments to speak of");
 	    }
-	    cc.channel.programChange(ci);
-	    if (record) {
-		addEvent(PROGRAM,ci);
+	    cc.channel.programChange(select);
+	    if (recording) {
+		addEvent(PROGRAM,select);
 	    }
 	}
-	*/  
+	 
 	//instrument selection
     }
     
