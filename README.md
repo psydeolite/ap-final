@@ -8,11 +8,12 @@ This project includes a Synthesizer, there are 5 types of instruments you can pl
 Installation
 ==========
 1. Pull folder
-2. Compile Synth.java 
-3. Run Synth 
+2. Compile Driver.java 
+3. Run Driver 
 
-Uses
+Use
 =============
+Play with the synthesizer! Try out different instruments and record/play/save your very own midi file. 
 
 Changes
 =====
@@ -34,3 +35,4 @@ Changes
 01/19 - fixed layout formatting, recording and playback now works. however, multi-voice recording does not. added vague instrument table - MG <br/>
 01/19 - save button saves, and instrument table vaguely exists- MG <br/>
 01/20 - instrument table and program change work, Rabia adjusted piano size - MG <br/>
+01/20 - added some comments - RA <br/>
