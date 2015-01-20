@@ -70,7 +70,13 @@ public class Synth extends JFrame{
 		//seqr.open();
 		Soundbank s=syn.getDefaultSoundbank();
 		if (s!=null) {
-		    instruments=syn.getDefaultSoundbank().getInstruments();
+		    Instrument[] instrumentlist=syn.getDefaultSoundbank().getInstruments();
+		    instruments=new Instrument[5];
+		    instruments[0]=instrumentlist[1];
+		    instruments[1]=instrumentlist[20];
+		    instruments[2]=instrumentlist[41];
+		    instruments[3]=instrumentlist[57];
+		    instruments[4]=instrumentlist[81];
 		    syn.loadInstrument(instruments[0]);
 		}
 		MidiChannel mc[]=syn.getChannels();
@@ -264,7 +270,7 @@ public class Synth extends JFrame{
     }
     
     class InstrumentTable {
-	private int rownum=10;
+	private int rownum=5;
 	private int colnum=1;
 	Box box = Box.createVerticalBox();
 	String[] columnName={"Instruments"};
