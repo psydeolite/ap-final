@@ -12,18 +12,21 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import javax.swing.event.*;
+import javax.swing.event.ListSelectionListener;
 
 public class Synth extends JFrame{
     final int PROGRAM = 192;
     final int NOTEON = 144;
     final int NOTEOFF = 128;
-    Synthesizer syn; //MidiSystem.getSynthesizer();
+    Synthesizer syn; 
     Sequencer seqr;
     Sequence seq;
     Piano piano;
     Chanel[] channels;
     Chanel cc;
     Instrument[] instruments;
+    Instrument ci;
     boolean recording;
     boolean playing;
     long stime;
@@ -32,9 +35,6 @@ public class Synth extends JFrame{
     InstrumentTable instrumentable;
     private Container pane;
     private JPanel canvas;
-    //private JButton record, srecord,play,stop,save;
-    //private ButtonGroup instrumentz;
-    //private JRadioButton p,guitar,violin,trumpet,flute;
     private JLabel label;
     private JFrame frame;
 
@@ -149,7 +149,6 @@ public class Synth extends JFrame{
 	}
 	public void actionPerformed(ActionEvent a) {
 	    JButton button = (JButton) a.getSource();
-	    //System.out.println("actionperformed");
 	    if (button.equals(play)) {
 		if (!playing) {
 		    if (track!=null) {
@@ -194,7 +193,6 @@ public class Synth extends JFrame{
 	}
 	
 	public void save() {
-	    System.out.println("save");
 	    File f=new File("file.mid");
 	    JFileChooser fc=new JFileChooser(f);
 	    fc.setFileFilter(new javax.swing.filechooser.FileFilter() {
@@ -226,7 +224,6 @@ public class Synth extends JFrame{
 	    }
 	}
 	public void startRecord() {
-	    System.out.println("startrecord");
 	    try {
 		seqr.open();
 		seqr.setSequence(seq);
@@ -235,22 +232,17 @@ public class Synth extends JFrame{
 	    }
 	    track=seq.createTrack();
 	    tracks.add(track);
-	    System.out.println(tracks.size());
 	    seqr.recordEnable(track,cc.channelnum);
 	    stime=System.currentTimeMillis();
-	    //seqr.startRecording();
 	    recording=true;
 	}
 
 	public void stopRecord() {
-	    System.out.println("stoprecord");
-	    //seqr.stopRecording();
 	    recording=false;
 	}
 
 	public void startPlay() {
 	    playing=true;
-	    System.out.println("startplay");
 	    try {
 		seqr.open();
 		seqr.setSequence(seq);
@@ -261,7 +253,6 @@ public class Synth extends JFrame{
 	}
 
 	public void stopPlay() {
-	    System.out.println("stopplay");
 	    playing=false;
 	    seqr.stop();
 	}
@@ -281,6 +272,7 @@ public class Synth extends JFrame{
 	Object[][] data = { 
 	    {"Piano"}, {"Guitar"}, {"Violin"}, {"Trumpet"}, {"Flute"}
 	};
+	JTable table;
 	public InstrumentTable() {    
 	    //table.setShowGrid(true);
 	    //TableColumn c=table.getColumnModel().getColumn(0);
@@ -312,7 +304,19 @@ public class Synth extends JFrame{
 	
 	//JTable table=new JTable(data,columnName);
 	
-	    JTable table=new JTable(model);
+	    table=new JTable(model);
+
+	    ListSelectionModel lsm=table.getSelectionModel();
+	    lsm.addListSelectionListener(new ListSelectionListener() {
+		    public void valueChanged(ListSelectionEvent e) {
+			ListSelectionModel sm=(ListSelectionModel) e.getSource();
+			if (!sm.isSelectionEmpty()) {
+			    changeProgram(table.getSelectedRow());
+			} else {
+			    changeProgram(sm.getMinSelectionIndex());
+			}
+		    }
+		});
             table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             TableColumn c = table.getColumnModel().getColumn(0);
             c.setPreferredWidth(5);
@@ -322,19 +326,22 @@ public class Synth extends JFrame{
 	public Box getBox() {
 	    return box;
 	}
-	/*
-	public void changeProgram() {
+	
+	public void changeProgram(int select) {
+	    System.out.println("changing program");
+	    ci=instruments[select];
+	    System.out.println(ci);
 	    if (instruments!=null) {
-		syn.loadInstrument(instruments[ci]);
+		syn.loadInstrument(instruments[select]);
 	    } else {
 		System.out.println("no instruments to speak of");
 	    }
-	    cc.channel.programChange(ci);
-	    if (record) {
-		addEvent(PROGRAM,ci);
+	    cc.channel.programChange(select);
+	    if (recording) {
+		addEvent(PROGRAM,select);
 	    }
 	}
-	*/  
+	
 	//instrument selection
     }
     
