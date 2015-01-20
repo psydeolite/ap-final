@@ -33,3 +33,4 @@ Changes
 01/18 - spent 5 hours uselessly trying to figure out layouts - RA <br/>
 01/19 - fixed layout formatting, recording and playback now works. however, multi-voice recording does not. added vague instrument table - MG <br/>
 01/19 - save button saves, and instrument table vaguely exists- MG <br/>
+01/20 - instrument table and program change work, Rabia adjusted piano size - MG <br/>
