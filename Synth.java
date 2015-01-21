@@ -68,23 +68,29 @@ public class Synth extends JFrame{
 		System.out.println("can't open synth");
 		return;
 	    } else {
+		System.out.println("opening synth");
 		syn.open();
+		System.out.println("done opening synth");
 		seq=new Sequence(Sequence.PPQ, 10);
 		seqr=MidiSystem.getSequencer();
 		//seqr.open();
+		System.out.println("getting soundbank");
 		Soundbank s=syn.getDefaultSoundbank();
 		if (s!=null) {
+		    System.out.println("instrumenting");
 		    Instrument[] instrumentlist=syn.getDefaultSoundbank().getInstruments();
 		    instruments=new Instrument[5];
-		    instruments[0]=instrumentlist[1];
+		    instruments[0]=instrumentlist[0];
 		    instruments[1]=instrumentlist[20];
 		    instruments[2]=instrumentlist[41];
 		    instruments[3]=instrumentlist[57];
 		    instruments[4]=instrumentlist[81];
 		    syn.loadInstrument(instruments[0]);
 		}
+		System.out.println("getting channels");
 		MidiChannel mc[]=syn.getChannels();
 		channels=new Chanel[mc.length];
+		System.out.println("forlooping");
 		for (int i=0;i<5;i++) {
 		    System.out.println("added channel "+i);
 		    channels[i]=new Chanel(mc[i],i);
@@ -239,6 +245,7 @@ public class Synth extends JFrame{
 
 	public void stopRecord() {
 	    recording=false;
+	    System.out.println(tracks.size());
 	}
 
 	public void startPlay() {
@@ -268,18 +275,14 @@ public class Synth extends JFrame{
 	private int rownum=5;
 	private int colnum=1;
 	Box box = Box.createVerticalBox();
-	String[] columnName={"Instruments"};
-	Object[][] data = { 
-	    {"Piano"}, {"Guitar"}, {"Violin"}, {"Trumpet"}, {"Flute"}
-	};
 	JTable table;
+	String[] columnName={"Instruments"};
 	public InstrumentTable() {    
 	    //table.setShowGrid(true);
 	    //TableColumn c=table.getColumnModel().getColumn(0);
 	    //box.add(table);
 	    //c.setPreferredWidth(5);
 	    //box.add(table);
-	 
 	    TableModel model = new AbstractTableModel() {
 		    public int getRowCount() {
 			return rownum;
