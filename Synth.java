@@ -1,5 +1,8 @@
 /* --------
-Rabia Akhtar and Mariya Gedrich  */ 
+Do-Re-Midi 
+Rabia Akhtar and Mariya Gedrich 
+Period 2 
+January 2015 */ 
 
 
 import java.io.*;
@@ -38,7 +41,11 @@ public class Synth extends JFrame{
     private JLabel label;
     private JFrame frame;
 
+	/*sets up the GUI 
+
+*/ 
     public Synth() {
+
         frame = new JFrame("Do-Re-Midi");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	//Box one = Box.createHorizontalBox();
@@ -60,8 +67,9 @@ public class Synth extends JFrame{
 	frame.setVisible(true);
     }
 
-    
+    	/* gets sound */ 
     public void open() {
+
 	try {
 	    syn=MidiSystem.getSynthesizer();
 	    if (syn==null) {
@@ -132,7 +140,8 @@ public class Synth extends JFrame{
 	     e.printStackTrace();
 	 }
     }
-
+	/* class Recorder records what you play
+           and allows you to save it*/ 
     class Recorder implements ActionListener {
 	Box one=Box.createHorizontalBox();
 	JButton record=new JButton("Record");
@@ -270,7 +279,7 @@ public class Synth extends JFrame{
 	    }
 	}
     }
-    
+    /* creates instrument table */
     class InstrumentTable {
 	private int rownum=5;
 	private int colnum=1;
@@ -362,10 +371,11 @@ public class Synth extends JFrame{
 	}
     }
     
-    
+   
     class Key extends Rectangle {
 	boolean on=false;
 	int keynum;
+	/* creates each individual key by using the properties of rectangle */
 	public Key(int x, int y, int w, int h, int n) {
 	    super(x,y,w,h);
 	    keynum=n;
@@ -399,6 +409,8 @@ public class Synth extends JFrame{
 	ArrayList<Key> keys=new ArrayList<Key>();
 	Key pkey;
 	
+	/* Piano sets note values for each each key and determines thier positioning */
+
 	public Piano() {
 	    setPreferredSize(new Dimension(600,280));
 	    setBorder(BorderFactory.createLineBorder(Color.black));
@@ -434,7 +446,8 @@ public class Synth extends JFrame{
 	}
 	
 	
-	
+	/* paint takes the array we filled in piano 
+           and paints it onto the GUI into a piano shape*/
 	public void paint (Graphics thing)
 	{
 	    Graphics2D g = (Graphics2D) thing;
