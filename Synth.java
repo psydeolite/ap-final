@@ -37,7 +37,6 @@ public class Synth extends JFrame{
     Track track;
     Recorder recorder;
     InstrumentTable instrumentable;
-    int ci;
     private Container pane;
     private JPanel canvas;
     private JLabel label;
@@ -379,7 +378,7 @@ public class Synth extends JFrame{
 	    //table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    box.add(table);
 
-	    ListSelectionModel lsm = table.getSelectionModel();
+	    /*ListSelectionModel lsm = table.getSelectionModel();
 	    lsm.addListSelectionListener(new ListSelectionListener() {
 		    public void valueChanged(ListSelectionEvent e) {
 			ListSelectionModel sm=(ListSelectionModel) e.getSource();
@@ -389,7 +388,7 @@ public class Synth extends JFrame{
 			    changeProgram(sm.getMinSelectionIndex());
 			}
 		    }
-		});
+		    });*/
 	}
 	
 	public Box getBox() {
