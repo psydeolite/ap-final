@@ -147,22 +147,17 @@ public class Synth extends JFrame{
 	 try {
 	     if (command==PROGRAM) {
 		 m.setMessage(command,cc.channelnum,n,0);
+		 if (recording) {
+		     System.out.println("program change WHILE RECORDING");
+		 }
 	     } else {
 		 m.setMessage(command,cc.channelnum,n,60);
 	     }
 	     System.out.println("command: "+m.getCommand());
 	      MidiEvent me = new MidiEvent(m, tic);
 	      track.add(me);
-	      System.out.println("track size:"+track.size());
-	    /*if (on) {
-		m.setMessage(ShortMessage.NOTE_ON, 0, k.keynum, 60);
-	    } else {
-		m.setMessage(ShortMessage.NOTE_OFF, 0, k.keynum, 60);
-	    }
-	} catch (InvalidMidiDataException e) {
-	    e.printStackTrace();
-	    }*/
-	    
+	     
+	      System.out.println("track size:"+track.size());   
 	 } catch (Exception e) {
 	     e.printStackTrace();
 	 }
@@ -279,6 +274,7 @@ public class Synth extends JFrame{
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
+	    recording=true;
 	    track=seq.createTrack();
 	    System.out.println("in startRecord:" +track.size());
 	    tracks.add(track);
@@ -286,7 +282,7 @@ public class Synth extends JFrame{
 	    System.out.println("just added program change record event");
 	    seqr.recordEnable(track,cc.channelnum);
 	    stime=System.currentTimeMillis();
-	    recording=true;
+	    //recording=true;
 	}
 
 	public void stopRecord() {
