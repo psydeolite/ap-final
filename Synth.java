@@ -110,9 +110,9 @@ public class Synth extends JFrame{
 		    instruments[3]=instrumentlist[10];
 		    instrumentnums[3]=10;
 		    instruments[4]=instrumentlist[81];
-		    */
 		    
-		    //syn.loadInstrument(instruments[0]);
+		   
+		    syn.loadInstrument(instruments[0]);
 		    */
 		    instrumentnums=new int[5];
 		    instrumentnums[0]=5;
@@ -378,9 +378,10 @@ public class Synth extends JFrame{
 		});
 	    table.setCellSelectionEnabled(true);
 	    table.setColumnSelectionAllowed(false);
-            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            TableColumn c = table.getColumnModel().getColumn(0);
-            c.setPreferredWidth(5);
+            table.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
+            TableColumn columnA = table.getColumn(table.getColumnName(0));
+            columnA.setMinWidth(400);
+            columnA.setMaxWidth(400);
 	    //table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    box.add(table);
 
