@@ -381,7 +381,7 @@ public class Synth extends JFrame{
             table.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
             TableColumn columnA = table.getColumn(table.getColumnName(0));
             columnA.setMinWidth(350);
-            columnA.setMaxWidth(3500);
+            columnA.setMaxWidth(350);
 	    //table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    box.add(table);
 
