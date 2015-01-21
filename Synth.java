@@ -15,6 +15,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.event.*;
 import javax.swing.event.ListSelectionListener;
 
@@ -48,22 +50,24 @@ public class Synth extends JFrame{
 */ 
     public Synth() {
 	open();
+	setSize(300,300);
         frame = new JFrame("Do-Re-Midi");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	//Box one = Box.createHorizontalBox();
         //Box two = Box.createVerticalBox();
         JPanel topbox = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topbox.setBorder(new EmptyBorder(20, 60, 0, 0) );
 	topbox.add(piano = new Piano());
 	instrumentable=new InstrumentTable();
 	recorder=new Recorder();
 	whole = Box.createVerticalBox();
-	
 	whole.add(recorder.getBox());
 	whole.add(topbox);
 	whole.add(instrumentable.getBox());
 	//whole.add(recorder.getBox());
 	//whole.add(instrumentable.getBox());
 	Container content = frame.getContentPane();
+        whole.setBorder(new EmptyBorder(10, 50, 50, 0) );
 	content.setLayout(new BorderLayout());
 	content.add(whole, BorderLayout.CENTER);
 	frame.pack();
