@@ -378,11 +378,15 @@ public class Synth extends JFrame{
 		});
 	    table.setCellSelectionEnabled(true);
 	    table.setColumnSelectionAllowed(false);
+	    table.setRowMargin(5);
+            JTableHeader header = table.getTableHeader(); 
+	    header.setBackground(Color.pink);
             table.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
             TableColumn columnA = table.getColumn(table.getColumnName(0));
             columnA.setMinWidth(350);
             columnA.setMaxWidth(350);
 	    //table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    box.add(header);
 	    box.add(table);
 
 	    /*ListSelectionModel lsm = table.getSelectionModel();
