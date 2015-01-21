@@ -87,20 +87,32 @@ public class Synth extends JFrame{
 		if (s!=null) {
 		    //instrumentable=new InstrumentTable();
 		    //whole.add(instrumentable.getBox());
-		    Instrument[] instrumentlist=syn.getDefaultSoundbank().getInstruments();
-		    instruments=new Instrument[5];
+		    instruments=syn.getDefaultSoundbank().getInstruments();
+		    /*instruments=new Instrument[5];
 		    instrumentnums=new int[5];
-		    instruments[0]=instrumentlist[1];
-		    instrumentnums[0]=1;
-		    instruments[1]=instrumentlist[20];
-		    instrumentnums[2]=20;
-		    instruments[2]=instrumentlist[41];
-		    instrumentnums[3]=57;
-		    instruments[3]=instrumentlist[57];
-		    instrumentnums[4]=81;
+		    instruments[0]=instrumentlist[99];
+		    instrumentnums[0]=99;
+		    instruments[1]=instrumentlist[45];
+		    instrumentnums[1]=45;
+		    instruments[2]=instrumentlist[61];
+		    instrumentnums[2]=61;
+		    instruments[3]=instrumentlist[10];
+		    instrumentnums[3]=10;
 		    instruments[4]=instrumentlist[81];
-		    syn.loadInstrument(instruments[0]);
+		    instrumentnums[4]=81;
+		    */
+		    instrumentnums=new int[5];
+		    instrumentnums[0]=5;
+		    instrumentnums[1]=99;
+		    instrumentnums[2]=45;
+		    instrumentnums[3]=61;
+		    instrumentnums[4]=81;
+		    //syn.loadInstrument(instruments[instrumentnums[0]]);
+		    syn.loadInstrument(instruments[instrumentnums[0]]);
 		    ci=0;
+		    for (int i=0;i<instruments.length;i++) {
+			System.out.println(instruments[i].toString());
+		    }
 		}
 		MidiChannel mc[]=syn.getChannels();
 		channels=new Chanel[mc.length];
@@ -109,6 +121,7 @@ public class Synth extends JFrame{
 		    channels[i]=new Chanel(mc[i],i);
 		}
 		cc=channels[0];
+		cc.channel.programChange(instrumentnums[0]);
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -116,7 +129,7 @@ public class Synth extends JFrame{
 	}
     }
 
-    public void close() {
+    public void close(){
 	if (syn!=null) {
 	    syn.close();
 	}
@@ -130,8 +143,15 @@ public class Synth extends JFrame{
 	long dur=System.currentTimeMillis()-stime;
 	long tic=dur*seq.getResolution()/500;
 	 try {
-	     m.setMessage(command,0,n,60);
+	     if (command==PROGRAM) {
+		 m.setMessage(command,cc.channelnum,n,0);
+	     } else {
+		 m.setMessage(command,cc.channelnum,n,60);
+	     }
 	     System.out.println("command: "+m.getCommand());
+	      MidiEvent me = new MidiEvent(m, tic);
+	      track.add(me);
+	      System.out.println("track size:"+track.size());
 	    /*if (on) {
 		m.setMessage(ShortMessage.NOTE_ON, 0, k.keynum, 60);
 	    } else {
@@ -140,12 +160,11 @@ public class Synth extends JFrame{
 	} catch (InvalidMidiDataException e) {
 	    e.printStackTrace();
 	    }*/
-	    MidiEvent me = new MidiEvent(m, tic);
-	    track.add(me);
-	    System.out.println("track size:"+track.size());
+	    
 	 } catch (Exception e) {
 	     e.printStackTrace();
 	 }
+	
     }
 	/* class Recorder records what you play
            and allows you to save it*/ 
@@ -165,6 +184,11 @@ public class Synth extends JFrame{
 	    one.add(play);
 	    save.addActionListener(this);
 	    one.add(save);
+	    try {
+		seq=new Sequence(Sequence.PPQ,10);
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 	}
 	public Box getBox() {
 	    return one;
@@ -215,6 +239,7 @@ public class Synth extends JFrame{
 	}
 	
 	public void save() {
+	    System.out.println(""+track.size());
 	    File f=new File("file.mid");
 	    JFileChooser fc=new JFileChooser(f);
 	    fc.setFileFilter(new javax.swing.filechooser.FileFilter() {
@@ -255,8 +280,8 @@ public class Synth extends JFrame{
 	    track=seq.createTrack();
 	    System.out.println("in startRecord:" +track.size());
 	    tracks.add(track);
-	    addEvent(PROGRAM,ci);
-	    System.out.println(""+ci);
+	    addEvent(PROGRAM,instrumentnums[ci]);
+	    System.out.println("just added program change record event");
 	    seqr.recordEnable(track,cc.channelnum);
 	    stime=System.currentTimeMillis();
 	    recording=true;
@@ -281,12 +306,14 @@ public class Synth extends JFrame{
 	public void stopPlay() {
 	    playing=false;
 	    seqr.stop();
+	    seqr.close();
 	}
 
 	public void clearTrack() {
 	    while (track.size()>0) {
 		track.remove(track.get(0));
 	    }
+	    System.out.println("postclear:"+track.size());
 	    tracks.remove(0);
 	}
     }
@@ -312,7 +339,7 @@ public class Synth extends JFrame{
 		    public int getColumnCount() {return colnum;}
 		    public Object getValueAt(int row, int col) {
 			if (instruments!=null) {
-			    return instruments[row].getName();
+			    return instruments[instrumentnums[row]].getName();
 			} else {
 			    return Integer.toString(2);
 			}
@@ -335,7 +362,7 @@ public class Synth extends JFrame{
 			if (!e.getValueIsAdjusting()) {
 			    ListSelectionModel sm=(ListSelectionModel) e.getSource();
 			    if (!sm.isSelectionEmpty()) {
-				//System.out.println("selection not empty");
+				System.out.println("row: "+table.getSelectedRow());
 				changeProgram(table.getSelectedRow());
 			    } 
 			}
@@ -358,18 +385,15 @@ public class Synth extends JFrame{
 	    ci=select;
 	    //System.out.println(ci);
 	    if (instruments!=null) {
-		syn.loadInstrument(instruments[select]);
-		cc.channel.programChange(select);
-		if (recording) {
-		    addEvent(PROGRAM,instrumentnums[select]);
-		}
+		syn.loadInstrument(instruments[instrumentnums[select]]);
+		System.out.println(instruments[instrumentnums[select]].toString());
 	    } else {
 		System.out.println("no instruments to speak of");
 	    }
-	    /*cc.channel.programChange(select);
+	    cc.channel.programChange(instrumentnums[select]);
 	    if (recording) {
 		addEvent(PROGRAM,instrumentnums[select]);
-		}*/
+		}
 	}
 	
 	//instrument selection
