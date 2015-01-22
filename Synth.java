@@ -29,7 +29,6 @@ public class Synth extends JFrame{
     Piano piano;
     //Chanel[] channels;
     Chanel cc;
-    TrackTable tracktable;
     Track[] tracks;
     Instrument[] instruments;
     int[] instrumentnums;
@@ -41,15 +40,14 @@ public class Synth extends JFrame{
     Track ctrack;
     Recorder recorder;
     InstrumentTable instrumentable;
-    private Container pane;
+    TrackTable tracktable;
+    private Container content;
     private JPanel x,topbox;
     private JLabel label;
     private JFrame frame;
     private Box whole;
 
-    /*sets up the GUI 
-
-     */ 
+    /*sets up the GUI  */ 
     public Synth() {
 	open();
 	setSize(300,300);
@@ -78,7 +76,7 @@ public class Synth extends JFrame{
         whole.setBorder(new EmptyBorder(10, 50, 50, 0) );
 
 	//add to container
-	Container content = frame.getContentPane();
+	content = frame.getContentPane();
 	content.setLayout(new BorderLayout());
 	content.add(whole, BorderLayout.CENTER);
 	frame.pack();
@@ -118,9 +116,9 @@ public class Synth extends JFrame{
 		MidiChannel mc[]=syn.getChannels();
 		cc=new Chanel(mc[0],1);
 		/*for (int i=0;i<5;i++) {
-		    channels[i]=new Chanel(mc[i],i);
-		}
-		cc=channels[0];
+		  channels[i]=new Chanel(mc[i],i);
+		  }
+		  cc=channels[0];
 		*/
 		cc.channel.programChange(instrumentnums[0]);
 	    }
@@ -183,10 +181,10 @@ public class Synth extends JFrame{
 	    one.add(play);
 	    save.addActionListener(this);
 	    one.add(save);
-//------------debugging code
+	    //------------debugging code
 	    thing.addActionListener(this);
 	    one.add(thing);
-//------------end debugging code
+	    //------------end debugging code
 	    try {
 		seq=new Sequence(Sequence.PPQ,10);
 	    } catch (Exception e) {
@@ -217,20 +215,20 @@ public class Synth extends JFrame{
 		    save.setEnabled(true);
 		}
 	   
-//----------------debugging code start
-		} else if (button.equals(thing)) {
+		//----------------debugging code start
+	    } else if (button.equals(thing)) {
 		try {
 		    seqr.open();
 		    seqr.setSequence(seq);
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
-		    ctrack=seq.createTrack();
-		    addEvent(192, 5);
-		    addEvent(NOTEON, 100);
-		    addEvent(NOTEOFF, 100);
-		    seqr.start();
-//---------------debugging code end
+		ctrack=seq.createTrack();
+		addEvent(192, 5);
+		addEvent(NOTEON, 100);
+		addEvent(NOTEOFF, 100);
+		seqr.start();
+		//---------------debugging code end
 	    } else if (button.equals(record)) {
 		if (recording) {
 		    record.setText("Record");
@@ -282,13 +280,13 @@ public class Synth extends JFrame{
 			System.out.println("Problems writing file");
 		    }
 		    /*int[] types=MidiSystem.getMidiFileTypes(seq);
-		    if (types.length!=0) {
-			if (MidiSystem.write(seq,types[0],rf)==-1) {
-			    throw new IOException("problems writing file");
-			}
-		    } else {
-			System.out.println("can't save this");
-			}*/
+		      if (types.length!=0) {
+		      if (MidiSystem.write(seq,types[0],rf)==-1) {
+		      throw new IOException("problems writing file");
+		      }
+		      } else {
+		      System.out.println("can't save this");
+		      }*/
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
@@ -362,21 +360,21 @@ public class Synth extends JFrame{
 		tracks[i]=null;
 	    }
 	    /*while (tracks.length>0) {
-		current=tracks[0];
-		seq.deleteTrack(current);
+	      current=tracks[0];
+	      seq.deleteTrack(current);
 	      
-		current=tracks[0];
+	      current=tracks[0];
 
-		System.out.println("currentsize: "+current.size());
-		while (current.size()>1) {
-		    System.out.println(""+current.size());
-		    current.remove(current.get(0));
+	      System.out.println("currentsize: "+current.size());
+	      while (current.size()>1) {
+	      System.out.println(""+current.size());
+	      current.remove(current.get(0));
 		    
-		}
-		current.remove(current.get(0));
-		//System.out.println("postclear:"+track.size());
-		tracks[0]=null;
-		}*/
+	      }
+	      current.remove(current.get(0));
+	      //System.out.println("postclear:"+track.size());
+	      tracks[0]=null;
+	      }*/
 	    trackindex=0;
 	    ctrack=null;
 	}
@@ -388,210 +386,210 @@ public class Synth extends JFrame{
 	    System.out.println("deleted track");
 	}
     }
-	/* creates instrument table */
-	class InstrumentTable {
-	    private int rownum=5;
-	    private int colnum=1;
-	    Box box = Box.createVerticalBox();
-	    JTable table;
-	    String[] columnName={"Instruments"};
-	    public InstrumentTable() {    
-		//table.setShowGrid(true);
-		//TableColumn c=table.getColumnModel().getColumn(0);
-		//box.add(table);
-		//c.setPreferredWidth(5);
-		//box.add(table);
-		TableModel model = new AbstractTableModel() {
-			public int getRowCount() {return rownum;}
-			public int getColumnCount() {return colnum;}
-			public Object getValueAt(int row, int col) {
-			    if (instruments!=null) {
-				return instruments[instrumentnums[row]].getName();
-			    } else {
-				return Integer.toString(2);
-			    }
+    /* creates instrument table */
+    class InstrumentTable {
+	private int rownum=5;
+	private int colnum=1;
+	Box box = Box.createVerticalBox();
+	JTable table;
+	String[] columnName={"Instruments"};
+	public InstrumentTable() {    
+	    //table.setShowGrid(true);
+	    //TableColumn c=table.getColumnModel().getColumn(0);
+	    //box.add(table);
+	    //c.setPreferredWidth(5);
+	    //box.add(table);
+	    TableModel model = new AbstractTableModel() {
+		    public int getRowCount() {return rownum;}
+		    public int getColumnCount() {return colnum;}
+		    public Object getValueAt(int row, int col) {
+			if (instruments!=null) {
+			    return instruments[instrumentnums[row]].getName();
+			} else {
+			    return Integer.toString(2);
 			}
-			public String getColumnName(int col) {return columnName[col];}
-			public Class getColumnClass(int col) {return getValueAt(0,col).getClass();}
-			public boolean isCellEditable(int row, int col) { return false;}
-			public void setValueAt(Object obj,int row, int col) {}
-		    };
+		    }
+		    public String getColumnName(int col) {return columnName[col];}
+		    public Class getColumnClass(int col) {return getValueAt(0,col).getClass();}
+		    public boolean isCellEditable(int row, int col) { return false;}
+		    public void setValueAt(Object obj,int row, int col) {}
+		};
 	
-		//JTable table=new JTable(data,columnName);
+	    //JTable table=new JTable(data,columnName);
 	
-		table=new JTable(model);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    table=new JTable(model);
+	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	       
-		ListSelectionModel lsm=table.getSelectionModel();
-		lsm.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-			    //System.out.println("value changed");
-			    if (!e.getValueIsAdjusting()) {
-				ListSelectionModel sm=(ListSelectionModel) e.getSource();
-				if (!sm.isSelectionEmpty()) {
-				    //System.out.println("row: "+table.getSelectedRow());
-				    ci=table.getSelectedRow();
-				    System.out.println("ci after being selected: "+ci);
-				    //changeProgram(table.getSelectedRow());
-				    changeProgram();
-				} 
-			    }
+	    ListSelectionModel lsm=table.getSelectionModel();
+	    lsm.addListSelectionListener(new ListSelectionListener() {
+		    public void valueChanged(ListSelectionEvent e) {
+			//System.out.println("value changed");
+			if (!e.getValueIsAdjusting()) {
+			    ListSelectionModel sm=(ListSelectionModel) e.getSource();
+			    if (!sm.isSelectionEmpty()) {
+				//System.out.println("row: "+table.getSelectedRow());
+				ci=table.getSelectedRow();
+				System.out.println("ci after being selected: "+ci);
+				//changeProgram(table.getSelectedRow());
+				changeProgram();
+			    } 
 			}
-		    });
-		table.setRowSelectionInterval(0,0);
-		table.setCellSelectionEnabled(true);
-		table.setColumnSelectionAllowed(false);
-		table.setRowMargin(5);
-		JTableHeader header = table.getTableHeader(); 
-		header.setBackground(Color.pink);
-		table.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
-		TableColumn columnA = table.getColumn(table.getColumnName(0));
-		columnA.setMinWidth(350);
-		columnA.setMaxWidth(350);
-		//table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		box.add(header);
-		box.add(table);
+		    }
+		});
+	    table.setRowSelectionInterval(0,0);
+	    table.setCellSelectionEnabled(true);
+	    table.setColumnSelectionAllowed(false);
+	    table.setRowMargin(5);
+	    JTableHeader header = table.getTableHeader(); 
+	    header.setBackground(Color.pink);
+	    table.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
+	    TableColumn columnA = table.getColumn(table.getColumnName(0));
+	    columnA.setMinWidth(350);
+	    columnA.setMaxWidth(350);
+	    //table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    box.add(header);
+	    box.add(table);
 
-		/*ListSelectionModel lsm = table.getSelectionModel();
-		  lsm.addListSelectionListener(new ListSelectionListener() {
-		  public void valueChanged(ListSelectionEvent e) {
-		  ListSelectionModel sm=(ListSelectionModel) e.getSource();
-		  if (!sm.isSelectionEmpty()) {
-		  changeProgram(ci);
-		  } else {
-		  changeProgram(sm.getMinSelectionIndex());
-		  }
-		  }
-		  });*/
-	    }
-	
-	    public Box getBox() {
-		return box;
-	    }
-	
-	    public void changeProgram() {
-		//ci=select;
-		//System.out.println(ci);
-		if (instruments!=null) {
-		    syn.loadInstrument(instruments[instrumentnums[ci]]);
-		} else {
-		    System.out.println("no instruments to speak of");
-		}
-		cc.channel.programChange(instrumentnums[ci]);
-		if (recording) {
-		    addEvent(PROGRAM,instrumentnums[ci]);
-		}
-	    
-	    }
-	
-	    //instrument selection
+	    /*ListSelectionModel lsm = table.getSelectionModel();
+	      lsm.addListSelectionListener(new ListSelectionListener() {
+	      public void valueChanged(ListSelectionEvent e) {
+	      ListSelectionModel sm=(ListSelectionModel) e.getSource();
+	      if (!sm.isSelectionEmpty()) {
+	      changeProgram(ci);
+	      } else {
+	      changeProgram(sm.getMinSelectionIndex());
+	      }
+	      }
+	      });*/
 	}
+	
+	public Box getBox() {
+	    return box;
+	}
+	
+	public void changeProgram() {
+	    //ci=select;
+	    //System.out.println(ci);
+	    if (instruments!=null) {
+		syn.loadInstrument(instruments[instrumentnums[ci]]);
+	    } else {
+		System.out.println("no instruments to speak of");
+	    }
+	    cc.channel.programChange(instrumentnums[ci]);
+	    if (recording) {
+		addEvent(PROGRAM,instrumentnums[ci]);
+	    }
+	    
+	}
+	
+	//instrument selection
+    }
     
-	class TrackTable {
-	    private JTable table;
-	    private Box box=Box.createVerticalBox();
-	    private int colnum=1;
-	    private int rownum=4;
-	    private String[] columnName={"Tracks"};
-	    private String s=new String("Empty");
+    class TrackTable {
+	private JTable table;
+	private Box box=Box.createVerticalBox();
+	private int colnum=1;
+	private int rownum=4;
+	private String[] columnName={"Tracks"};
+	private String s=new String("Empty");
 	    
 
-	    public TrackTable() {
+	public TrackTable() {
 		
-		TableModel model = new AbstractTableModel() {
-			public int getRowCount() {return rownum;}
-			public int getColumnCount() {return colnum;}
-			public Object getValueAt(int row, int col) {
-			    if (tracks!=null && tracks[row]!=null) {
-				return "Track "+(row+1)+": "+instruments[ci].getName();
-			    } else {
-				return s;
-			    }
+	    TableModel model = new AbstractTableModel() {
+		    public int getRowCount() {return rownum;}
+		    public int getColumnCount() {return colnum;}
+		    public Object getValueAt(int row, int col) {
+			if (tracks!=null && tracks[row]!=null) {
+			    return "Track "+(row+1)+": "+instruments[ci].getName();
+			} else {
+			    return s;
 			}
-			public String getColumnName(int col) {return columnName[col];}
-			public Class getColumnClass(int col) {return getValueAt(0,col).getClass();}
-			public boolean isCellEditable(int row, int col) { return false;}
-			public void setValueAt(Object obj,int row, int col) {}
-		    };
-		table=new JTable(model);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		    }
+		    public String getColumnName(int col) {return columnName[col];}
+		    public Class getColumnClass(int col) {return getValueAt(0,col).getClass();}
+		    public boolean isCellEditable(int row, int col) { return false;}
+		    public void setValueAt(Object obj,int row, int col) {}
+		};
+	    table=new JTable(model);
+	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		ListSelectionModel lsm=table.getSelectionModel();
-		lsm.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-			    if (!e.getValueIsAdjusting()) {
-				ListSelectionModel sm=(ListSelectionModel) e.getSource();
-				if (!sm.isSelectionEmpty()) {
-				    trackindex=table.getSelectedRow();
-				    //ctrack=tracks[trackindex];
-				}
+	    ListSelectionModel lsm=table.getSelectionModel();
+	    lsm.addListSelectionListener(new ListSelectionListener() {
+		    public void valueChanged(ListSelectionEvent e) {
+			if (!e.getValueIsAdjusting()) {
+			    ListSelectionModel sm=(ListSelectionModel) e.getSource();
+			    if (!sm.isSelectionEmpty()) {
+				trackindex=table.getSelectedRow();
+				//ctrack=tracks[trackindex];
 			    }
 			}
-		    });
-		table.setRowSelectionInterval(0,0);
-		table.setCellSelectionEnabled(true);
-		table.setColumnSelectionAllowed(false);
-		table.setRowMargin(5);
-		JTableHeader header = table.getTableHeader(); 
-		header.setBackground(Color.cyan);
-		table.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
-		TableColumn columnA = table.getColumn(table.getColumnName(0));
-		columnA.setMinWidth(200);
-		columnA.setMaxWidth(200);
-		//table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		box.add(header);
-		box.add(table);
+		    }
+		});
+	    table.setRowSelectionInterval(0,0);
+	    table.setCellSelectionEnabled(true);
+	    table.setColumnSelectionAllowed(false);
+	    table.setRowMargin(5);
+	    JTableHeader header = table.getTableHeader(); 
+	    header.setBackground(Color.cyan);
+	    table.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
+	    TableColumn columnA = table.getColumn(table.getColumnName(0));
+	    columnA.setMinWidth(200);
+	    columnA.setMaxWidth(200);
+	    //table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    box.add(header);
+	    box.add(table);
 		
-	    }
+	}
 	
-	    public Box getBox() {
-		return box;
-	    }
+	public Box getBox() {
+	    return box;
+	}
 	    
 
-	    //channel stuff
-	}
+	//channel stuff
+    }
     
-	class Chanel {
-	    //actual channel stuff
-	    MidiChannel channel;
-	    int channelnum;
-	    public Chanel(MidiChannel c, int cnum) {
-		channel=c;
-		channelnum=cnum;
-	    }
+    class Chanel {
+	//actual channel stuff
+	MidiChannel channel;
+	int channelnum;
+	public Chanel(MidiChannel c, int cnum) {
+	    channel=c;
+	    channelnum=cnum;
 	}
+    }
     
    
-	class Key extends Rectangle {
-	    boolean on=false;
-	    int keynum;
-	    /* creates each individual key by using the properties of rectangle */
-	    public Key(int x, int y, int w, int h, int n) {
-		super(x,y,w,h);
-		keynum=n;
-	    }
-	    public boolean isOn() {
-		return on;
+    class Key extends Rectangle {
+	boolean on=false;
+	int keynum;
+	/* creates each individual key by using the properties of rectangle */
+	public Key(int x, int y, int w, int h, int n) {
+	    super(x,y,w,h);
+	    keynum=n;
+	}
+	public boolean isOn() {
+	    return on;
 	    
-	    }
-	    public void turnOn(Key k) {
-		System.out.println("turnOn");
-		on=true;
-		cc.channel.noteOn(k.keynum, 100);
-		if (recording) {
-		    addEvent(NOTEON, k.keynum);
-		}
-	    }
-	    public void turnOff(Key k) {
-		System.out.println("turnOff");
-		on=false;
-		cc.channel.noteOff(k.keynum);
-		if (recording) {
-		    addEvent(NOTEOFF, k.keynum);
-		}
+	}
+	public void turnOn(Key k) {
+	    System.out.println("turnOn");
+	    on=true;
+	    cc.channel.noteOn(k.keynum, 100);
+	    if (recording) {
+		addEvent(NOTEON, k.keynum);
 	    }
 	}
+	public void turnOff(Key k) {
+	    System.out.println("turnOff");
+	    on=false;
+	    cc.channel.noteOff(k.keynum);
+	    if (recording) {
+		addEvent(NOTEOFF, k.keynum);
+	    }
+	}
+    }
     
     class Piano extends JPanel implements MouseListener, KeyListener {
 	boolean pressed=false;
