@@ -55,9 +55,12 @@ public class Synth extends JFrame{
 	setSize(300,300);
         frame = new JFrame("Do-Re-Midi");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	//frame.requestFocusInWindow();
         JPanel topbox = new JPanel(new FlowLayout(FlowLayout.CENTER));
         topbox.setBorder(new EmptyBorder(20, 60, 0, 0) );
 	topbox.add(piano = new Piano());
+	piano.setFocusable(true);
+	//piano.requestFocusInWindow();
 	instrumentable=new InstrumentTable();
 	recorder=new Recorder();
 	tracktable=new TrackTable();
@@ -142,7 +145,7 @@ public class Synth extends JFrame{
 		    System.out.println("program change WHILE RECORDING");
 		} 
 	    } else {
-		m.setMessage(command,cc.channelnum,n,60);
+		m.setMessage(command,cc.channelnum,n,100);
 	    }
 	    MidiEvent me = new MidiEvent(m, tic);
 	    
@@ -216,8 +219,8 @@ public class Synth extends JFrame{
 		}
 		    ctrack=seq.createTrack();
 		    addEvent(192, 5);
-		    addEvent(NOTEON, 60);
-		    addEvent(NOTEOFF, 60);
+		    addEvent(NOTEON, 100);
+		    addEvent(NOTEOFF, 100);
 		    seqr.start();
 //---------------debugging code end
 	    } else if (button.equals(record)) {
@@ -235,7 +238,7 @@ public class Synth extends JFrame{
 		    save.setEnabled(false);
 		}
 	    } else if (button.equals(clear)) {
-		if (ctrack.size()!=0) {
+		if (ctrack!=null && ctrack.size()!=0) {
 		    clearAll();
 		} 
 	    } else if (button.equals(save)) {
@@ -262,16 +265,22 @@ public class Synth extends JFrame{
 		});
 	    int returnVal=fc.showSaveDialog(frame);
 	    if (returnVal==JFileChooser.APPROVE_OPTION) {
-		File rf=fc.getSelectedFile();
+		File out=fc.getSelectedFile();
 		try {
 		    int[] types=MidiSystem.getMidiFileTypes(seq);
+		    try {
+			MidiSystem.write(seq,types[0],out);
+		    } catch (Exception e) {
+			System.out.println("Problems writing file");
+		    }
+		    /*int[] types=MidiSystem.getMidiFileTypes(seq);
 		    if (types.length!=0) {
 			if (MidiSystem.write(seq,types[0],rf)==-1) {
 			    throw new IOException("problems writing file");
 			}
 		    } else {
 			System.out.println("can't save this");
-		    }
+			}*/
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
@@ -291,13 +300,14 @@ public class Synth extends JFrame{
 		clearTrack(trackindex);
 	    }
 	    ctrack=seq.createTrack();
-	    stime=System.currentTimeMillis();
+	    
 	    //cc.channel.programChange(instrumentnums[ci]);
 	    System.out.println("ci in startRecord: "+ci);
 	    
 	    System.out.println("Instrument denoted by ci in startRecord: "+instruments[instrumentnums[ci]]);
 	    tracks[trackindex]=ctrack;
 	    seqr.recordEnable(ctrack,cc.channelnum);
+	    stime=System.currentTimeMillis();
 	    addEvent(PROGRAM,instrumentnums[ci]);
 	    if (tracks.length!=0) {
 		//System.out.println(seq.getTracks().length);
@@ -470,13 +480,16 @@ public class Synth extends JFrame{
 	}
     
 	class TrackTable {
-	    JTable table;
-	    Box box=Box.createVerticalBox();
+	    private JTable table;
+	    private Box box=Box.createVerticalBox();
 	    private int colnum=1;
 	    private int rownum=4;
-	    String[] columnName={"Tracks"};
-	    String s=new String("Empty");
+	    private String[] columnName={"Tracks"};
+	    private String s=new String("Empty");
+	    
+
 	    public TrackTable() {
+		
 		TableModel model = new AbstractTableModel() {
 			public int getRowCount() {return rownum;}
 			public int getColumnCount() {return colnum;}
@@ -520,6 +533,7 @@ public class Synth extends JFrame{
 		//table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		box.add(header);
 		box.add(table);
+		
 	    }
 	
 	    public Box getBox() {
@@ -556,7 +570,7 @@ public class Synth extends JFrame{
 	    public void turnOn(Key k) {
 		System.out.println("turnOn");
 		on=true;
-		cc.channel.noteOn(k.keynum, 60);
+		cc.channel.noteOn(k.keynum, 100);
 		if (recording) {
 		    addEvent(NOTEON, k.keynum);
 		}
@@ -571,152 +585,177 @@ public class Synth extends JFrame{
 	    }
 	}
     
-	class Piano extends JPanel implements MouseListener {
-	    boolean pressed=false;
-	    ArrayList<Key> whitekeys=new ArrayList<Key>();
-	    ArrayList<Key> blackkeys=new ArrayList<Key>(); 
-	    ArrayList<Key> keys=new ArrayList<Key>();
-	    Key pkey;
+    class Piano extends JPanel implements MouseListener, KeyListener {
+	boolean pressed=false;
+	ArrayList<Key> whitekeys=new ArrayList<Key>();
+	ArrayList<Key> blackkeys=new ArrayList<Key>(); 
+	ArrayList<Key> keys=new ArrayList<Key>();
+	HashMap<Character,Key> charKeys=new HashMap<Character,Key>();
+	char[] blackchars={'2','3','5','6','7','9','0','=','\u0008'};
+	char[] whitechars={'q','w','e','r','t','y','u','i','o','p','[',']',(char) 92};
+	Key pkey;
 	
-	    /* Piano sets note values for each each key and determines thier positioning */
-
-	    public Piano() {
-		setPreferredSize(new Dimension(600,280));
-		setBorder(BorderFactory.createLineBorder(Color.black));
-		//int keystart=60;
-		for (int i=0, x = 0, y= 0, keystart=60;i<22;i++, x+=23, y+=40,keystart++) {
-		    //makes key, starting keynum at 60 and incrementing by one
-		    //adds to keys and white/black array, depending on pitch
+	/* Piano sets note values for each each key and determines thier positioning */
 	
-		    if (keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70 && keystart!=73 && keystart!=75 && keystart!=78 && keystart!=80) { 
-			whitekeys.add(new Key(y,0,40,230,keystart));
-		   
-			//System.out.println("w: "+keystart);
-			//x-=12;
-		    } else {
-			if (keystart==61) {
-			    blackkeys.add(new Key(26,0,25,150,keystart));
-			    //System.out.println("b1: "+keystart);
-			} else {
-			    blackkeys.add(new Key(x,0,25,150,keystart));
+	public Piano() {
+	    setPreferredSize(new Dimension(600,280));
+	    setBorder(BorderFactory.createLineBorder(Color.black));
+	    //int keystart=60;
+	    for (int i=0, x = 0, y= 0, keystart=60;i<22;i++, x+=23, y+=40,keystart++) {
+		//makes key, starting keynum at 60 and incrementing by one
+		//adds to keys and white/black array, depending on pitch
 		
-			    //System.out.println("b: "+keystart);
-			}
-			y-=40;
+		if (keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70 && keystart!=73 && keystart!=75 && keystart!=78 && keystart!=80) { 
+		    whitekeys.add(new Key(y,0,40,230,keystart));
+		    
+		    //System.out.println("w: "+keystart);
+		    //x-=12;
+		} else {
+		    if (keystart==61) {
+			blackkeys.add(new Key(26,0,25,150,keystart));
+			//System.out.println("b1: "+keystart);
+		    } else {
+			blackkeys.add(new Key(x,0,25,150,keystart));
+			
+			//System.out.println("b: "+keystart);
 		    }
-		    //	keystart++;
+		    y-=40;
 		}
-		keys.addAll(whitekeys);
-		keys.addAll(blackkeys);
-	   
-		addMouseListener(this);
+		//	keystart++;
 	    }
+	    keys.addAll(whitekeys);
+	    keys.addAll(blackkeys);
+	    for (int i=0;i<blackchars.length;i++) {
+		charKeys.put(blackchars[i],blackkeys.get(i));
+	    }
+	    for (int i=0;i<whitechars.length;i++) {
+		charKeys.put(whitechars[i],whitekeys.get(i));
+	    }
+	    
+	    addKeyListener(this);
+	    addMouseListener(this);
+	    this.requestFocus();
+	    
+	}
 	
 	
-	    /* paint takes the array we filled in piano 
-	       and paints it onto the GUI into a piano shape*/
-	    public void paint (Graphics thing)
-	    {
-		Graphics2D g = (Graphics2D) thing;
-		Dimension d = getSize();
-	   
-		g.setBackground(getBackground());
-		g.clearRect(0, 0, 500, 700);
-		//g.clearRect(0,0,520,700);
-		g.setColor(Color.white);
-		g.fillRect(0, 0, 520,230);
-		for (int i = 0; i < whitekeys.size(); i++) {
-		    Key key = (Key) whitekeys.get(i);
-		    if (key.isOn()) {
-			//System.out.println(""+key.keynum);
-			g.setColor(Color.cyan);
-			g.fill(key);
-		    }
-		    g.setColor(Color.black);
+	/* paint takes the array we filled in piano 
+	   and paints it onto the GUI into a piano shape*/
+	public void paint (Graphics thing)
+	{
+	    Graphics2D g = (Graphics2D) thing;
+	    Dimension d = getSize();
+	    
+	    g.setBackground(getBackground());
+	    g.clearRect(0, 0, 500, 700);
+	    //g.clearRect(0,0,520,700);
+	    g.setColor(Color.white);
+	    g.fillRect(0, 0, 520,230);
+	    for (int i = 0; i < whitekeys.size(); i++) {
+		Key key = (Key) whitekeys.get(i);
+		if (key.isOn()) {
+		    //System.out.println(""+key.keynum);
+		    g.setColor(Color.cyan);
+		    g.fill(key);
+		}
+		g.setColor(Color.black);
+		g.draw(key);
+	    }
+	    for (int i = 0; i < blackkeys.size(); i++) {
+		Key key = (Key) blackkeys.get(i);
+		if (key.isOn()){
+		    g.setColor(Color.pink);
+		    g.fill(key);
 		    g.draw(key);
 		}
-		for (int i = 0; i < blackkeys.size(); i++) {
-		    Key key = (Key) blackkeys.get(i);
-		    if (key.isOn()){
-			g.setColor(Color.pink);
-			g.fill(key);
-			g.draw(key);
-		    }
-		    else{
-			g.setColor(Color.black);
-			g.fill(key);
-		    }
+		else{
+		    g.setColor(Color.black);
+		    g.fill(key);
 		}
+	    }
 	    
-	    }
-	
-	    public void mouseClicked(MouseEvent e) {}
-	    public void mousePressed(MouseEvent e) {
-		pkey=getKey(e.getPoint());
-		//System.out.println(pkey);
-		//System.out.println(pkey.keynum);
-		if (pkey!=null) {
-		    keyPress(pkey);
-		    //System.out.println("mouse pressed: "+pkey.keynum);
-		}
-	    }
-	    public void mouseReleased(MouseEvent e) {
-		if (pkey!=null) {
-		    //System.out.println("mouse released");
-		    keyUnpress(pkey);
-		    pkey=null;
-		}
-	    }
-	    public void mouseEntered(MouseEvent e) {}
-	    public void mouseExited(MouseEvent e) {}
-	
-	    public void keyPress(Key k) {
-		//change color
-		keySound(k);
-		repaint();
-		pressed=true;
-		repaint();
-	    }
-	
-	    public void keyUnpress(Key k) {
-		//change color back
-		k.turnOff(k);
-		pressed=false;
-		repaint();
-	    }
-	
-	    public void keySound(Key k) {
-		//makes sound
-		//System.out.println(k.keynum);
-		k.turnOn(k);
-	    }
-	
-	    public void keyRecord(Key k) {
-		keySound(k);
-		//records a sound
-	    }
-	
-	    public Key getKey(Point p) {
-		Key r;
-		for (int j=0; j<blackkeys.size();j++) {
-		    if (((Key) blackkeys.get(j)).contains(p)) {
-			return blackkeys.get(j);
-		    }
-		}
-		for (int i=0; i<keys.size();i++) {
-		    //System.out.println("enteredloop");
-		    if (((Key) keys.get(i)).contains(p)) {
-			//System.out.println("gotkey");
-		    
-			//System.out.println("gotPitch: "+keys.get(i).keynum);
-			return keys.get(i);
-		    }
-		}
-		return null;
+	}
+	public void keyTyped(KeyEvent e) {}
+	public void keyPressed(KeyEvent e) {
+	    System.out.println("key is pressed");
+	    char key=e.getKeyChar();
+	    if (charKeys.containsKey(key)) {
+		keyPress(charKeys.get(key));
 	    }
 	}
-    
+	public void keyReleased(KeyEvent e) {
+	    char key=e.getKeyChar();
+	    if (charKeys.containsKey(key)){
+		keyUnpress(charKeys.get(key));
+	    }
+	}
+	public void mouseClicked(MouseEvent e) {
+	    
+	}
+	public void mousePressed(MouseEvent e) {
+	    pkey=getKey(e.getPoint());
+	    if (pkey!=null) {
+		keyPress(pkey);
+	    }
+	}
+	public void mouseReleased(MouseEvent e) {
+	    if (pkey!=null) {
+		//System.out.println("mouse released");
+		keyUnpress(pkey);
+		pkey=null;
+	    }
+	    this.requestFocus();
+	}
+	public void mouseEntered(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {}
+	
+	public void keyPress(Key k) {
+	    //change color
+	    keySound(k);
+	    repaint();
+	    pressed=true;
+	    repaint();
+	}
+	
+	public void keyUnpress(Key k) {
+	    //change color back
+	    k.turnOff(k);
+	    pressed=false;
+	    repaint();
+	}
+	
+	public void keySound(Key k) {
+	    //makes sound
+	    //System.out.println(k.keynum);
+	    k.turnOn(k);
+	}
+	
+	public void keyRecord(Key k) {
+	    keySound(k);
+	    //records a sound
+	}
+	
+	public Key getKey(Point p) {
+	    Key r;
+	    for (int j=0; j<blackkeys.size();j++) {
+		if (((Key) blackkeys.get(j)).contains(p)) {
+		    return blackkeys.get(j);
+		}
+	    }
+	    for (int i=0; i<keys.size();i++) {
+		//System.out.println("enteredloop");
+		if (((Key) keys.get(i)).contains(p)) {
+		    //System.out.println("gotkey");
+		    
+		    //System.out.println("gotPitch: "+keys.get(i).keynum);
+		    return keys.get(i);
+		}
+	    }
+	    return null;
+	}
     }
+    
+}
 
 	
 	
