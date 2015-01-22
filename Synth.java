@@ -42,7 +42,7 @@ public class Synth extends JFrame{
     Recorder recorder;
     InstrumentTable instrumentable;
     private Container pane;
-    private JPanel x;
+    private JPanel x,topbox;
     private JLabel label;
     private JFrame frame;
     private Box whole;
@@ -55,25 +55,30 @@ public class Synth extends JFrame{
 	setSize(300,300);
         frame = new JFrame("Do-Re-Midi");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	//frame.requestFocusInWindow();
-        JPanel topbox = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        topbox.setBorder(new EmptyBorder(20, 60, 0, 0) );
-	topbox.add(piano = new Piano());
-	piano.setFocusable(true);
-	//piano.requestFocusInWindow();
-	instrumentable=new InstrumentTable();
+
+        // initialize 
 	recorder=new Recorder();
+        topbox = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topbox.setBorder(new EmptyBorder(20, 60, 0, 0) );
+        piano = new Piano();
+	piano.setFocusable(true);
 	tracktable=new TrackTable();
-	whole = Box.createVerticalBox();
-	whole.add(recorder.getBox());
-	whole.add(topbox);
 	JPanel x = new JPanel();
 	x.add(tracktable.getBox());
         x.setBorder(new EmptyBorder(0, 10, 10, 10) );
+	instrumentable=new InstrumentTable();
+
+	//set up GUI
+	whole = Box.createVerticalBox();
+	whole.add(recorder.getBox());
+     	topbox.add(piano);
+	whole.add(topbox);
 	whole.add(x);
 	whole.add(instrumentable.getBox());
-	Container content = frame.getContentPane();
         whole.setBorder(new EmptyBorder(10, 50, 50, 0) );
+
+	//add to container
+	Container content = frame.getContentPane();
 	content.setLayout(new BorderLayout());
 	content.add(whole, BorderLayout.CENTER);
 	frame.pack();
@@ -528,7 +533,7 @@ public class Synth extends JFrame{
 		table.setColumnSelectionAllowed(false);
 		table.setRowMargin(5);
 		JTableHeader header = table.getTableHeader(); 
-		header.setBackground(Color.pink);
+		header.setBackground(Color.cyan);
 		table.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
 		TableColumn columnA = table.getColumn(table.getColumnName(0));
 		columnA.setMinWidth(200);
