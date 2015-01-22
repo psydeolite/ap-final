@@ -27,9 +27,9 @@ public class Synth extends JFrame{
     Sequencer seqr;
     Sequence seq;
     Piano piano;
-    //Chanel[] channels;
+    Chanel[] channels;
     Chanel cc;
-    Track[] tracks;
+    ArrayList<Track> tracks;
     Instrument[] instruments;
     int[] instrumentnums;
     int ci;
@@ -118,11 +118,11 @@ public class Synth extends JFrame{
 		}
 		MidiChannel mc[]=syn.getChannels();
 		cc=new Chanel(mc[0],1);
-		/*for (int i=0;i<5;i++) {
+		channels=new Chanel[4];
+		for (int i=0;i<4;i++) {
 		  channels[i]=new Chanel(mc[i],i);
 		  }
 		  cc=channels[0];
-		*/
 		cc.channel.programChange(instrumentnums[0]);
 	    }
 	} catch (Exception e) {
@@ -158,7 +158,7 @@ public class Synth extends JFrame{
 	    }
 	    MidiEvent me = new MidiEvent(m, tic);
 	    
-	    ctrack.add(me);
+	    cc.track.add(me);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
@@ -175,7 +175,7 @@ public class Synth extends JFrame{
 	//JButton thing=new JButton("do the thing");
 	
 	public Recorder() {
-	    tracks=new Track[4];
+	    tracks=new ArrayList<Track>();
 	    record.addActionListener(this);
 	    one.add(record);
 	    clear.addActionListener(this);
@@ -201,7 +201,7 @@ public class Synth extends JFrame{
 	    JButton button = (JButton) a.getSource();
 	    if (button.equals(play)) {
 		if (!playing) {
-		    if (ctrack!=null) {
+		    if (cc.track!=null) {
 			play.setText("Stop");
 			startPlay();
 			record.setEnabled(false);
@@ -248,7 +248,7 @@ public class Synth extends JFrame{
 		    piano.requestFocus();
 		}
 	    } else if (button.equals(clear)) {
-		if (ctrack!=null && ctrack.size()!=0) {
+		if (cc.track!=null && cc.track.size()!=0) {
 		    clearAll();
 		} 
 	    } else if (button.equals(save)) {
@@ -304,26 +304,29 @@ public class Synth extends JFrame{
 		e.printStackTrace();
 	    }
 	    recording=true;
+	    if (cc.track!=null) {
+		clearTrack(cc.track);
+	    }
 	    //System.out.println("trackindex: "+trackindex);
-	    if (tracks[trackindex]!=null) {
+	    /*if (tracks[trackindex]!=null) {
 		//System.out.println("if trackindex isn't null");
 		clearTrack(trackindex);
-	    }
-	    ctrack=seq.createTrack();
-	    
+		}*/
+	    cc.track=seq.createTrack();
+	    tracks.add(cc.track);
 	    //cc.channel.programChange(instrumentnums[ci]);
-	    System.out.println("ci in startRecord: "+ci);
+	    //System.out.println("ci in startRecord: "+ci);
 	    
-	    System.out.println("Instrument denoted by ci in startRecord: "+instruments[instrumentnums[ci]]);
-	    tracks[trackindex]=ctrack;
-	    seqr.recordEnable(ctrack,cc.channelnum);
+	    //System.out.println("Instrument denoted by ci in startRecord: "+instruments[instrumentnums[ci]]);
+	    //tracks[trackindex]=ctrack;
+	    seqr.recordEnable(cc.track,cc.channelnum);
 	    stime=System.currentTimeMillis();
 	    addEvent(PROGRAM,instrumentnums[ci]);
-	    if (tracks.length!=0) {
+	    //if (tracks.length!=0) {
 		//System.out.println(seq.getTracks().length);
 		seqr.start();
 		playing=true;
-	    }
+		//}
 	    //stime=System.currentTimeMillis();
 	  
 	}
@@ -358,19 +361,19 @@ public class Synth extends JFrame{
 
 	public void clearAll() {
 	    Track current;
-	    for (int i=0;i<4;i++) {
-		current=tracks[i];
+	    while (tracks.size()>0) {
+		current=tracks.get(0);
 		seq.deleteTrack(current);
-		tracks[i]=null;
+		tracks.remove(0);
 	    }
-	    trackindex=0;
-	    ctrack=null;
+	    //trackindex=0;
+	    //ctrack=null;
 	}
 
 	//clears individual track
-	public void clearTrack(int tindex) {
+	public void clearTrack(Track t) {
 	    
-	    seq.deleteTrack(tracks[tindex]);
+	    seq.deleteTrack(t);
 	    System.out.println("deleted track");
 	}
     }
@@ -488,8 +491,8 @@ public class Synth extends JFrame{
 		    public int getRowCount() {return rownum;}
 		    public int getColumnCount() {return colnum;}
 		    public Object getValueAt(int row, int col) {
-			if (tracks!=null && tracks[row]!=null) {
-			    return "Track "+(row+1)+": "+instruments[ci].getName();
+			if (tracks!=null && channels[row].track!=null) {
+			    return "Channel "+(row+1)+": "+instruments[ci].getName();
 			} else {
 			    return s;
 			}
@@ -508,8 +511,9 @@ public class Synth extends JFrame{
 			if (!e.getValueIsAdjusting()) {
 			    ListSelectionModel sm=(ListSelectionModel) e.getSource();
 			    if (!sm.isSelectionEmpty()) {
-				trackindex=table.getSelectedRow();
+				//trackindex=table.getSelectedRow();
 				//ctrack=tracks[trackindex];
+				cc=channels[table.getSelectedRow()];
 			    }
 			}
 		    }
@@ -542,6 +546,7 @@ public class Synth extends JFrame{
 	//actual channel stuff
 	MidiChannel channel;
 	int channelnum;
+	Track track;
 	public Chanel(MidiChannel c, int cnum) {
 	    channel=c;
 	    channelnum=cnum;
