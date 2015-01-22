@@ -3,7 +3,7 @@ Do-Re-Midi
 
 Mariya Gedrich and Rabia Akhtar Period 2
 
-This project includes a Synthesizer, there are 5 types of instruments you can play using the keyboard. 
+This project includes a Synthesizer. There are 5 types of instruments you can play using the keyboard. You can record, play, and save what you do in .midi files. 
 
 Installation
 ==========
@@ -39,4 +39,4 @@ Changes
 01/20 - button bug and instrument loading bug fixed. persisting issues: random images of piano and table appear on click, playback of recorded stuff does not acknowledge program change, and much to my anguish, the files created by the program do not play, which actually makes no sense because a saved file that played yesterday on my computer does not play anymore?? - MG <br/>
 01/21 - fixed GUI, changed layout, added border, moved things around, changed colors, etc. etc. - RA <br/>
 01/21 - added table for tracks (soon to be channels because I discovered a **major** bug with that), saving works, program change acknowledged when recording. also added keylistener. remaining things: ANNOTATE IT all nice like in javadocs format, fix bug - MG <br/> 
-01/22 - fixed layout, cleaned up code - RA <br/>
+01/22 - fixed layout, cleaned up code. Goals: do java docs stuff tonight. - RA <br/>
