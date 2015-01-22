@@ -60,6 +60,7 @@ public class Synth extends JFrame{
         topbox.setBorder(new EmptyBorder(20, 60, 0, 0) );
         piano = new Piano();
 	piano.setFocusable(true);
+	//piano.requestFocus();
 	tracktable=new TrackTable();
 	JPanel x = new JPanel();
 	x.add(tracktable.getBox());
@@ -81,6 +82,8 @@ public class Synth extends JFrame{
 	content.add(whole, BorderLayout.CENTER);
 	frame.pack();
 	frame.setVisible(true);
+	
+	piano.requestFocus();
     }
 
     /* gets sound */ 
@@ -169,7 +172,7 @@ public class Synth extends JFrame{
 	JButton clear=new JButton("Clear");
 	JButton play =new JButton("Play");
 	JButton save=new JButton("Save");
-	JButton thing=new JButton("do the thing");
+	//JButton thing=new JButton("do the thing");
 	
 	public Recorder() {
 	    tracks=new Track[4];
@@ -181,10 +184,10 @@ public class Synth extends JFrame{
 	    one.add(play);
 	    save.addActionListener(this);
 	    one.add(save);
-	    //------------debugging code
+	    /*//------------debugging code
 	    thing.addActionListener(this);
 	    one.add(thing);
-	    //------------end debugging code
+	    //------------end debugging code*/
 	    try {
 		seq=new Sequence(Sequence.PPQ,10);
 	    } catch (Exception e) {
@@ -215,8 +218,8 @@ public class Synth extends JFrame{
 		    save.setEnabled(true);
 		}
 	   
-		//----------------debugging code start
-	    } else if (button.equals(thing)) {
+		/*//----------------debugging code start
+		} else if (button.equals(thing)) {
 		try {
 		    seqr.open();
 		    seqr.setSequence(seq);
@@ -228,7 +231,7 @@ public class Synth extends JFrame{
 		addEvent(NOTEON, 100);
 		addEvent(NOTEOFF, 100);
 		seqr.start();
-		//---------------debugging code end
+		//---------------debugging code end*/
 	    } else if (button.equals(record)) {
 		if (recording) {
 		    record.setText("Record");
@@ -242,6 +245,7 @@ public class Synth extends JFrame{
 		    play.setEnabled(false);
 		    clear.setEnabled(false);
 		    save.setEnabled(false);
+		    piano.requestFocus();
 		}
 	    } else if (button.equals(clear)) {
 		if (ctrack!=null && ctrack.size()!=0) {
@@ -359,22 +363,6 @@ public class Synth extends JFrame{
 		seq.deleteTrack(current);
 		tracks[i]=null;
 	    }
-	    /*while (tracks.length>0) {
-	      current=tracks[0];
-	      seq.deleteTrack(current);
-	      
-	      current=tracks[0];
-
-	      System.out.println("currentsize: "+current.size());
-	      while (current.size()>1) {
-	      System.out.println(""+current.size());
-	      current.remove(current.get(0));
-		    
-	      }
-	      current.remove(current.get(0));
-	      //System.out.println("postclear:"+track.size());
-	      tracks[0]=null;
-	      }*/
 	    trackindex=0;
 	    ctrack=null;
 	}
@@ -686,7 +674,10 @@ public class Synth extends JFrame{
 	    System.out.println("key is pressed");
 	    char key=e.getKeyChar();
 	    if (charKeys.containsKey(key)) {
-		keyPress(charKeys.get(key));
+		if (!charKeys.get(key).isOn()) {
+		    System.out.println("pressed");
+		    keyPress(charKeys.get(key));
+		}
 	    }
 	}
 	public void keyReleased(KeyEvent e) {
