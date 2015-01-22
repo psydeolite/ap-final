@@ -36,4 +36,5 @@ Changes
 01/19 - save button saves, and instrument table vaguely exists- MG <br/>
 01/20 - instrument table and program change work, Rabia adjusted piano size - MG <br/>
 01/20 - added some comments - RA <br/>
-01/20 - button bug and instrument loading bug fixed. persisting issues: random images of piano and table appear on click, playback of recorded stuff does not acknowledge program change, and much to my anguish, the files created by the program do not play, which actually makes no sense because a saved file that played yesterday on my computer does not play anymore?? - MG
+01/20 - button bug and instrument loading bug fixed. persisting issues: random images of piano and table appear on click, playback of recorded stuff does not acknowledge program change, and much to my anguish, the files created by the program do not play, which actually makes no sense because a saved file that played yesterday on my computer does not play anymore?? - MG <br/>
+01/21 - fixed GUI, changed layout, added border, moved things around, changed colors, etc. etc. - RA <br/>
