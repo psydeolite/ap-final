@@ -135,16 +135,16 @@ public class Synth extends JFrame{
 	try {
 	    if (command==192) {
 		
-		//m.setMessage(command,cc.channelnum,n,0);
-		m.setMessage(192,1,81,100);
-		System.out.println("wtf");
+		m.setMessage(command,cc.channelnum,n,0);
+		//m.setMessage(192,0,5,100);
+		//System.out.println("wtf");
 		if (recording) {
 		    System.out.println("program change WHILE RECORDING");
 		} 
 	    } else {
 		m.setMessage(command,cc.channelnum,n,60);
 	    }
-	    MidiEvent me = new MidiEvent(m, 5);
+	    MidiEvent me = new MidiEvent(m, tic);
 	    
 	    ctrack.add(me);
 	} catch (Exception e) {
@@ -207,7 +207,7 @@ public class Synth extends JFrame{
 		}
 	   
 //----------------debugging code start
-	    } else if (button.equals(thing)) {
+		} else if (button.equals(thing)) {
 		try {
 		    seqr.open();
 		    seqr.setSequence(seq);
@@ -215,7 +215,7 @@ public class Synth extends JFrame{
 		    e.printStackTrace();
 		}
 		    ctrack=seq.createTrack();
-		    addEvent(192, 55);
+		    addEvent(192, 5);
 		    addEvent(NOTEON, 60);
 		    addEvent(NOTEOFF, 60);
 		    seqr.start();
@@ -291,18 +291,20 @@ public class Synth extends JFrame{
 		clearTrack(trackindex);
 	    }
 	    ctrack=seq.createTrack();
+	    stime=System.currentTimeMillis();
 	    //cc.channel.programChange(instrumentnums[ci]);
 	    System.out.println("ci in startRecord: "+ci);
-	    addEvent(PROGRAM,instrumentnums[ci]);
+	    
 	    System.out.println("Instrument denoted by ci in startRecord: "+instruments[instrumentnums[ci]]);
 	    tracks[trackindex]=ctrack;
 	    seqr.recordEnable(ctrack,cc.channelnum);
+	    addEvent(PROGRAM,instrumentnums[ci]);
 	    if (tracks.length!=0) {
 		//System.out.println(seq.getTracks().length);
 		seqr.start();
 		playing=true;
 	    }
-	    stime=System.currentTimeMillis();
+	    //stime=System.currentTimeMillis();
 	  
 	}
 
@@ -336,14 +338,27 @@ public class Synth extends JFrame{
 
 	public void clearAll() {
 	    Track current;
-	    while (tracks.length>0) {
+	    for (int i=0;i<4;i++) {
+		current=tracks[i];
+		seq.deleteTrack(current);
+		tracks[i]=null;
+	    }
+	    /*while (tracks.length>0) {
 		current=tracks[0];
-		while (current.size()>0) {
+		seq.deleteTrack(current);
+	      
+		current=tracks[0];
+
+		System.out.println("currentsize: "+current.size());
+		while (current.size()>1) {
+		    System.out.println(""+current.size());
 		    current.remove(current.get(0));
+		    
 		}
+		current.remove(current.get(0));
 		//System.out.println("postclear:"+track.size());
 		tracks[0]=null;
-	    }
+		}*/
 	    trackindex=0;
 	    ctrack=null;
 	}
@@ -388,7 +403,7 @@ public class Synth extends JFrame{
 	
 		table=new JTable(model);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
+	       
 		ListSelectionModel lsm=table.getSelectionModel();
 		lsm.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
@@ -398,12 +413,14 @@ public class Synth extends JFrame{
 				if (!sm.isSelectionEmpty()) {
 				    //System.out.println("row: "+table.getSelectedRow());
 				    ci=table.getSelectedRow();
+				    System.out.println("ci after being selected: "+ci);
 				    //changeProgram(table.getSelectedRow());
 				    changeProgram();
 				} 
 			    }
 			}
 		    });
+		table.setRowSelectionInterval(0,0);
 		table.setCellSelectionEnabled(true);
 		table.setColumnSelectionAllowed(false);
 		table.setRowMargin(5);
@@ -490,7 +507,7 @@ public class Synth extends JFrame{
 			    }
 			}
 		    });
-
+		table.setRowSelectionInterval(0,0);
 		table.setCellSelectionEnabled(true);
 		table.setColumnSelectionAllowed(false);
 		table.setRowMargin(5);
