@@ -42,7 +42,7 @@ public class Synth extends JFrame{
     Recorder recorder;
     InstrumentTable instrumentable;
     private Container pane;
-    private JPanel canvas;
+    private JPanel x;
     private JLabel label;
     private JFrame frame;
     private Box whole;
@@ -67,7 +67,10 @@ public class Synth extends JFrame{
 	whole = Box.createVerticalBox();
 	whole.add(recorder.getBox());
 	whole.add(topbox);
-	whole.add(tracktable.getBox());
+	JPanel x = new JPanel();
+	x.add(tracktable.getBox());
+        x.setBorder(new EmptyBorder(0, 10, 10, 10) );
+	whole.add(x);
 	whole.add(instrumentable.getBox());
 	Container content = frame.getContentPane();
         whole.setBorder(new EmptyBorder(10, 50, 50, 0) );
@@ -598,7 +601,7 @@ public class Synth extends JFrame{
 	/* Piano sets note values for each each key and determines thier positioning */
 	
 	public Piano() {
-	    setPreferredSize(new Dimension(600,280));
+	    setPreferredSize(new Dimension(600,240));
 	    setBorder(BorderFactory.createLineBorder(Color.black));
 	    //int keystart=60;
 	    for (int i=0, x = 0, y= 0, keystart=60;i<22;i++, x+=23, y+=40,keystart++) {
