@@ -217,6 +217,7 @@ public class Synth extends JFrame{
 			record.setEnabled(false);
 			clear.setEnabled(false);
 			save.setEnabled(false);
+			piano.requestFocus();
 		    } else {
 			System.out.println("can't play track, null");
 		    }
@@ -226,6 +227,7 @@ public class Synth extends JFrame{
 		    record.setEnabled(true);
 		    clear.setEnabled(true);
 		    save.setEnabled(true);
+		    piano.requestFocus();
 		}
 	   
 	    } else if (button.equals(record)) {
@@ -235,6 +237,7 @@ public class Synth extends JFrame{
 		    play.setEnabled(true);
 		    clear.setEnabled(true);
 		    save.setEnabled(true);
+		    piano.requestFocus();
 		} else {
 		    record.setText("Stop");
 		    startRecord();
@@ -247,10 +250,14 @@ public class Synth extends JFrame{
 		if (cc.track!=null && cc.track.size()!=0) {
 		    clearAll();
 		} 
+		piano.requestFocus();
 	    } else if (button.equals(save)) {
 		try {
 		    save();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+		piano.requestFocus();
 	    }
 	}
 	
@@ -459,6 +466,7 @@ public class Synth extends JFrame{
 	    if (recording) {
 		addEvent(PROGRAM,currentInstrument);
 	    }
+	    piano.requestFocus();
 	    
 	}
 	
@@ -501,6 +509,8 @@ public class Synth extends JFrame{
 			    ListSelectionModel sm=(ListSelectionModel) e.getSource();
 			    if (!sm.isSelectionEmpty()) {
 				cc=channels[table.getSelectedRow()];
+				piano.requestFocus();
+				instrumentable.changeProgram(currentInstrument);
 			    }
 			}
 		    }
