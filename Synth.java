@@ -2,7 +2,12 @@
    Do-Re-Midi 
    Rabia Akhtar and Mariya Gedrich 
    Period 2 
-   January 2015 */ 
+   January 2015 
+
+Welcome to Synth.java!
+All classes are placed into this file for easy viewing and cross usage purposes. 
+
+*/ 
 
 
 import java.io.*;
@@ -60,7 +65,7 @@ public class Synth extends JFrame{
         topbox.setBorder(new EmptyBorder(20, 60, 0, 0) );
         piano = new Piano();
 	piano.setFocusable(true);
-	//piano.requestFocus();
+
 	tracktable=new TrackTable();
 	JPanel x = new JPanel();
 	x.add(tracktable.getBox());
@@ -94,17 +99,12 @@ public class Synth extends JFrame{
 	    if (syn==null) {
 		System.out.println("can't open synth");
 		return;
-	    } else {
-		//System.out.println("opening synth");
+	    } else {     
 		syn.open();
-		//System.out.println("done opening synth");
 		seq=new Sequence(Sequence.PPQ, 10);
 		seqr=MidiSystem.getSequencer();
-		//seqr.open();
-		//System.out.println("getting soundbank");
 		Soundbank s=syn.getDefaultSoundbank();
 		if (s!=null) {
-		    //System.out.println("instrumenting");
 		    instruments=syn.getDefaultSoundbank().getInstruments();
 		    instrumentnums=new int[16];
 		    instrumentnums[0]=0;
@@ -123,7 +123,6 @@ public class Synth extends JFrame{
 		    instrumentnums[13]=106;
 		    instrumentnums[14]=116;
 		    instrumentnums[15]=126;
-		    //syn.loadInstrument(instruments[instrumentnums[0]]);
 		    syn.loadInstrument(instruments[instrumentnums[0]]);
 		    ciindex=0;
 		}
@@ -148,7 +147,6 @@ public class Synth extends JFrame{
 	}
 	syn=null;
 	instruments=null;
-	//channels=null;
     }
     
     public void addEvent(int command, int n) {
@@ -159,8 +157,6 @@ public class Synth extends JFrame{
 	    if (command==192) {
 		
 		m.setMessage(command,cc.channelnum,n,0);
-		//m.setMessage(192,0,5,100);
-		//System.out.println("wtf");
 		if (recording) {
 		    System.out.println("program change WHILE RECORDING");
 		} 
@@ -175,6 +171,8 @@ public class Synth extends JFrame{
 	}
 	
     }
+
+
     /* class Recorder records what you play
        and allows you to save it*/ 
     class Recorder implements ActionListener {
@@ -183,7 +181,6 @@ public class Synth extends JFrame{
 	JButton clear=new JButton("Clear");
 	JButton play =new JButton("Play");
 	JButton save=new JButton("Save");
-	//JButton thing=new JButton("do the thing");
 	
 	public Recorder() {
 	    tracks=new ArrayList<Track>();
@@ -195,10 +192,6 @@ public class Synth extends JFrame{
 	    one.add(play);
 	    save.addActionListener(this);
 	    one.add(save);
-	    /*//------------debugging code
-	    thing.addActionListener(this);
-	    one.add(thing);
-	    //------------end debugging code*/
 	    try {
 		seq=new Sequence(Sequence.PPQ,10);
 	    } catch (Exception e) {
@@ -229,20 +222,6 @@ public class Synth extends JFrame{
 		    save.setEnabled(true);
 		}
 	   
-		/*//----------------debugging code start
-		} else if (button.equals(thing)) {
-		try {
-		    seqr.open();
-		    seqr.setSequence(seq);
-		} catch (Exception e) {
-		    e.printStackTrace();
-		}
-		ctrack=seq.createTrack();
-		addEvent(192, 5);
-		addEvent(NOTEON, 100);
-		addEvent(NOTEOFF, 100);
-		seqr.start();
-		//---------------debugging code end*/
 	    } else if (button.equals(record)) {
 		if (recording) {
 		    record.setText("Record");
@@ -270,7 +249,6 @@ public class Synth extends JFrame{
 	}
 	
 	public void save() {
-	    //System.out.println(""+track.size());
 	    File f=new File("file.mid");
 	    JFileChooser fc=new JFileChooser(f);
 	    fc.setFileFilter(new javax.swing.filechooser.FileFilter() {
@@ -294,14 +272,6 @@ public class Synth extends JFrame{
 		    } catch (Exception e) {
 			System.out.println("Problems writing file");
 		    }
-		    /*int[] types=MidiSystem.getMidiFileTypes(seq);
-		      if (types.length!=0) {
-		      if (MidiSystem.write(seq,types[0],rf)==-1) {
-		      throw new IOException("problems writing file");
-		      }
-		      } else {
-		      System.out.println("can't save this");
-		      }*/
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
@@ -318,28 +288,13 @@ public class Synth extends JFrame{
 	    if (cc.track!=null) {
 		clearTrack(cc.track);
 	    }
-	    //System.out.println("trackindex: "+trackindex);
-	    /*if (tracks[trackindex]!=null) {
-		//System.out.println("if trackindex isn't null");
-		clearTrack(trackindex);
-		}*/
 	    cc.track=seq.createTrack();
 	    tracks.add(cc.track);
-	    //cc.channel.programChange(instrumentnums[ci]);
-	    //System.out.println("ci in startRecord: "+ci);
-	    
-	    //System.out.println("Instrument denoted by ci in startRecord: "+instruments[instrumentnums[ci]]);
-	    //tracks[trackindex]=ctrack;
 	    seqr.recordEnable(cc.track,cc.channelnum);
 	    stime=System.currentTimeMillis();
 	    addEvent(PROGRAM,instrumentnums[ciindex]);
-	    //if (tracks.length!=0) {
-		//System.out.println(seq.getTracks().length);
 		seqr.start();
 		playing=true;
-		//}
-	    //stime=System.currentTimeMillis();
-	  
 	}
 
 	public void stopRecord() {
@@ -349,7 +304,6 @@ public class Synth extends JFrame{
 		seqr.close();
 		playing=false;
 	    }
-	    //System.out.println(tracks.size());
 	}
 
 	public void startPlay() {
@@ -359,8 +313,7 @@ public class Synth extends JFrame{
 		seqr.setSequence(seq);
 	    } catch (Exception e) {
 		e.printStackTrace();
-	    }
-	    //System.out.println("program:"+cc.channel.getProgram());
+	    }	   
 	    seqr.start();
 	}
 
@@ -377,8 +330,6 @@ public class Synth extends JFrame{
 		seq.deleteTrack(current);
 		tracks.remove(0);
 	    }
-	    //trackindex=0;
-	    //ctrack=null;
 	}
 
 	//clears individual track
@@ -399,11 +350,6 @@ public class Synth extends JFrame{
 	int ccol=0;
 	int crow=0;
 	public InstrumentTable() {    
-	    //table.setShowGrid(true);
-	    //TableColumn c=table.getColumnModel().getColumn(0);
-	    //box.add(table);
-	    //c.setPreferredWidth(5);
-	    //box.add(table);
 	    int c=0;
 	    for (int i=0;i<4;i++) {
 		for (int j=0;j<4;j++) {
@@ -428,7 +374,6 @@ public class Synth extends JFrame{
 		    public void setValueAt(Object obj,int row, int col) {}
 		};
 	
-	    //JTable table=new JTable(data,columnName);
 	
 	    table=new JTable(model);
 	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -436,18 +381,10 @@ public class Synth extends JFrame{
 	    ListSelectionModel lsm=table.getSelectionModel();
 	    lsm.addListSelectionListener(new ListSelectionListener() {
 		    public void valueChanged(ListSelectionEvent e) {
-			//System.out.println("value changed");
 			if (!e.getValueIsAdjusting()) {
 			    ListSelectionModel sm=(ListSelectionModel) e.getSource();
 			    if (!sm.isSelectionEmpty()) {
-				//System.out.println("row: "+table.getSelectedRow());
-				//System.out.println("col: "+table.getSelectedColumn());
-				//changeProgram(instrumentarray[table.getSelectedRow()][table.getSelectedColumn()]);
 				crow=table.getSelectedRow();
-				//ciindex=table.getSelectedRow();
-				//System.out.println("ciindex after being selected: "+ciindex);
-				//changeProgram(table.getSelectedRow());
-				//changeProgram();
 			    } 
 			    changeProgram(instrumentarray[crow][ccol]);
 			}
@@ -480,24 +417,9 @@ public class Synth extends JFrame{
 		column.setMinWidth(150);
 		column.setMaxWidth(150);
 	    }
-	    //TableColumn columnA = table.getColumn(table.getColumnName(0));
-	    // columnA.setMinWidth(350);
-	    //columnA.setMaxWidth(350);
-	    //table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    box.add(header);
 	    box.add(table);
 
-	    /*ListSelectionModel lsm = table.getSelectionModel();
-	      lsm.addListSelectionListener(new ListSelectionListener() {
-	      public void valueChanged(ListSelectionEvent e) {
-	      ListSelectionModel sm=(ListSelectionModel) e.getSource();
-	      if (!sm.isSelectionEmpty()) {
-	      changeProgram(ci);
-	      } else {
-	      changeProgram(sm.getMinSelectionIndex());
-	      }
-	      }
-	      });*/
 	}
 	
 	public Box getBox() {
@@ -558,8 +480,6 @@ public class Synth extends JFrame{
 			if (!e.getValueIsAdjusting()) {
 			    ListSelectionModel sm=(ListSelectionModel) e.getSource();
 			    if (!sm.isSelectionEmpty()) {
-				//trackindex=table.getSelectedRow();
-				//ctrack=tracks[trackindex];
 				cc=channels[table.getSelectedRow()];
 			    }
 			}
@@ -575,7 +495,6 @@ public class Synth extends JFrame{
 	    TableColumn columnA = table.getColumn(table.getColumnName(0));
 	    columnA.setMinWidth(200);
 	    columnA.setMaxWidth(200);
-	    //table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    box.add(header);
 	    box.add(table);
 		
@@ -700,7 +619,6 @@ public class Synth extends JFrame{
 	    for (int i = 0; i < whitekeys.size(); i++) {
 		Key key = (Key) whitekeys.get(i);
 		if (key.isOn()) {
-		    //System.out.println(""+key.keynum);
 		    g.setColor(Color.cyan);
 		    g.fill(key);
 		}
@@ -775,7 +693,6 @@ public class Synth extends JFrame{
 	
 	public void keySound(Key k) {
 	    //makes sound
-	    //System.out.println(k.keynum);
 	    k.turnOn(k);
 	}
 	
@@ -792,11 +709,7 @@ public class Synth extends JFrame{
 		}
 	    }
 	    for (int i=0; i<keys.size();i++) {
-		//System.out.println("enteredloop");
 		if (((Key) keys.get(i)).contains(p)) {
-		    //System.out.println("gotkey");
-		    
-		    //System.out.println("gotPitch: "+keys.get(i).keynum);
 		    return keys.get(i);
 		}
 	    }
