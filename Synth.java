@@ -37,7 +37,7 @@ public class Synth extends JFrame{
     ArrayList<Track> tracks;
     Instrument[] instruments;
     int[] instrumentnums;
-    int ciindex;
+    int currentInstrument;
     int trackindex;
     boolean recording;
     boolean playing;
@@ -124,7 +124,7 @@ public class Synth extends JFrame{
 		    instrumentnums[14]=116;
 		    instrumentnums[15]=126;
 		    syn.loadInstrument(instruments[instrumentnums[0]]);
-		    ciindex=0;
+		    currentInstrument=0;
 		}
 		MidiChannel mc[]=syn.getChannels();
 		cc=new Chanel(mc[0],1);
@@ -292,7 +292,8 @@ public class Synth extends JFrame{
 	    tracks.add(cc.track);
 	    seqr.recordEnable(cc.track,cc.channelnum);
 	    stime=System.currentTimeMillis();
-	    addEvent(PROGRAM,instrumentnums[ciindex]);
+	    syn.loadInstrument(instruments[currentInstrument]);
+	    addEvent(PROGRAM,currentInstrument);
 		seqr.start();
 		playing=true;
 	}
@@ -395,7 +396,7 @@ public class Synth extends JFrame{
 		    public void valueChanged(ListSelectionEvent e) {
 			ListSelectionModel sm=(ListSelectionModel) e.getSource();
 			if (!sm.isSelectionEmpty()) {
-			    System.out.println("colnum: "+table.getSelectedColumn());
+			    //System.out.println("colnum: "+table.getSelectedColumn());
 			    //changeProgram(instrumentarray[table.getSelectedRow()][table.getSelectedColumn()]);
 			    ccol=table.getSelectedColumn();
 			}
@@ -429,15 +430,16 @@ public class Synth extends JFrame{
 	public void changeProgram(int i) {
 	    //ci=select;
 	    //System.out.println(ci);
+	    currentInstrument=i;
 	    if (instruments!=null) {
-		syn.loadInstrument(instruments[instrumentnums[ciindex]]);
+		syn.loadInstrument(instruments[currentInstrument]);
 	    } else {
 		System.out.println("no instruments to speak of");
 	    }
 	    //cc.channel.programChange(instrumentnums[ciindex]);
-	    cc.channel.programChange(i);
+	    cc.channel.programChange(currentInstrument);
 	    if (recording) {
-		addEvent(PROGRAM,i);
+		addEvent(PROGRAM,currentInstrument);
 	    }
 	    
 	}
@@ -450,7 +452,7 @@ public class Synth extends JFrame{
 	private Box box=Box.createVerticalBox();
 	private int colnum=1;
 	private int rownum=4;
-	private String[] columnName={"Tracks"};
+	private String[] columnName={"Channels"};
 	private String s=new String("Empty");
 	    
 
@@ -461,7 +463,7 @@ public class Synth extends JFrame{
 		    public int getColumnCount() {return colnum;}
 		    public Object getValueAt(int row, int col) {
 			if (tracks!=null && channels[row].track!=null) {
-			    return "Channel "+(row+1)+": "+cc.channel.getProgram();
+			    return "Channel "+(row+1)+": "+instruments[channels[row].channel.getProgram()].getName();
 			} else {
 			    return s;
 			}
