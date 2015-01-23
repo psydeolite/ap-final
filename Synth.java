@@ -2,7 +2,12 @@
    Do-Re-Midi 
    Rabia Akhtar and Mariya Gedrich 
    Period 2 
-   January 2015 */ 
+   January 2015 
+
+Welcome to Synth.java!
+ All classes are placed into one file for easy viewing and cross usage purposes. 
+
+*/ 
 
 
 import java.io.*;
