@@ -32,7 +32,7 @@ public class Synth extends JFrame{
     ArrayList<Track> tracks;
     Instrument[] instruments;
     int[] instrumentnums;
-    int ci;
+    int ciindex;
     int trackindex;
     boolean recording;
     boolean playing;
@@ -106,15 +106,26 @@ public class Synth extends JFrame{
 		if (s!=null) {
 		    //System.out.println("instrumenting");
 		    instruments=syn.getDefaultSoundbank().getInstruments();
-		    instrumentnums=new int[5];
-		    instrumentnums[0]=5;
-		    instrumentnums[1]=99;
-		    instrumentnums[2]=45;
-		    instrumentnums[3]=61;
-		    instrumentnums[4]=81;
+		    instrumentnums=new int[16];
+		    instrumentnums[0]=0;
+		    instrumentnums[1]=11;
+		    instrumentnums[2]=19;
+		    instrumentnums[3]=29;
+		    instrumentnums[4]=34;
+		    instrumentnums[5]=40;
+		    instrumentnums[6]=52;
+		    instrumentnums[7]=56;
+		    instrumentnums[8]=65;
+		    instrumentnums[9]=73;
+		    instrumentnums[10]=81;
+		    instrumentnums[11]=88;
+		    instrumentnums[12]=97;
+		    instrumentnums[13]=106;
+		    instrumentnums[14]=116;
+		    instrumentnums[15]=126;
 		    //syn.loadInstrument(instruments[instrumentnums[0]]);
 		    syn.loadInstrument(instruments[instrumentnums[0]]);
-		    ci=0;
+		    ciindex=0;
 		}
 		MidiChannel mc[]=syn.getChannels();
 		cc=new Chanel(mc[0],1);
@@ -321,7 +332,7 @@ public class Synth extends JFrame{
 	    //tracks[trackindex]=ctrack;
 	    seqr.recordEnable(cc.track,cc.channelnum);
 	    stime=System.currentTimeMillis();
-	    addEvent(PROGRAM,instrumentnums[ci]);
+	    addEvent(PROGRAM,instrumentnums[ciindex]);
 	    //if (tracks.length!=0) {
 		//System.out.println(seq.getTracks().length);
 		seqr.start();
@@ -379,11 +390,11 @@ public class Synth extends JFrame{
     }
     /* creates instrument table */
     class InstrumentTable {
-	private int rownum=5;
-	private int colnum=1;
+	private int rownum=4;
+	private int colnum=4;
 	Box box = Box.createVerticalBox();
 	JTable table;
-	String[] columnName={"Instruments"};
+	String[] columnNames={"1","2","3","4"};
 	public InstrumentTable() {    
 	    //table.setShowGrid(true);
 	    //TableColumn c=table.getColumnModel().getColumn(0);
@@ -400,7 +411,7 @@ public class Synth extends JFrame{
 			    return Integer.toString(2);
 			}
 		    }
-		    public String getColumnName(int col) {return columnName[col];}
+		    public String getColumnName(int col) {return columnNames[col];}
 		    public Class getColumnClass(int col) {return getValueAt(0,col).getClass();}
 		    public boolean isCellEditable(int row, int col) { return false;}
 		    public void setValueAt(Object obj,int row, int col) {}
@@ -419,24 +430,39 @@ public class Synth extends JFrame{
 			    ListSelectionModel sm=(ListSelectionModel) e.getSource();
 			    if (!sm.isSelectionEmpty()) {
 				//System.out.println("row: "+table.getSelectedRow());
-				ci=table.getSelectedRow();
-				System.out.println("ci after being selected: "+ci);
+				ciindex=table.getSelectedRow();
+				System.out.println("ciindex after being selected: "+ciindex);
 				//changeProgram(table.getSelectedRow());
 				changeProgram();
 			    } 
 			}
 		    }
 		});
+	    lsm=table.getColumnModel().getSelectionModel();
+	    lsm.addListSelectionListener(new ListSelectionListener() {
+		    public void valueChanged(ListSelectionEvent e) {
+			ListSelectionModel sm=(ListSelectionModel) e.getSource();
+			if (!sm.isSelectionEmpty()) {
+			    System.out.println("colnum: "+table.getSelectedColumn());
+			}
+		    }
+		});
 	    table.setRowSelectionInterval(0,0);
 	    table.setCellSelectionEnabled(true);
-	    table.setColumnSelectionAllowed(false);
+	    table.setColumnSelectionAllowed(true);
 	    table.setRowMargin(5);
 	    JTableHeader header = table.getTableHeader(); 
 	    header.setBackground(Color.pink);
 	    table.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
-	    TableColumn columnA = table.getColumn(table.getColumnName(0));
-	    columnA.setMinWidth(350);
-	    columnA.setMaxWidth(350);
+	    for (int i=0;i<4;i++) {
+		TableColumn column=table.getColumn(table.getColumnName(i));
+		
+		column.setMinWidth(150);
+		column.setMaxWidth(150);
+	    }
+	    //TableColumn columnA = table.getColumn(table.getColumnName(0));
+	    // columnA.setMinWidth(350);
+	    //columnA.setMaxWidth(350);
 	    //table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    box.add(header);
 	    box.add(table);
@@ -462,13 +488,13 @@ public class Synth extends JFrame{
 	    //ci=select;
 	    //System.out.println(ci);
 	    if (instruments!=null) {
-		syn.loadInstrument(instruments[instrumentnums[ci]]);
+		syn.loadInstrument(instruments[instrumentnums[ciindex]]);
 	    } else {
 		System.out.println("no instruments to speak of");
 	    }
-	    cc.channel.programChange(instrumentnums[ci]);
+	    cc.channel.programChange(instrumentnums[ciindex]);
 	    if (recording) {
-		addEvent(PROGRAM,instrumentnums[ci]);
+		addEvent(PROGRAM,instrumentnums[ciindex]);
 	    }
 	    
 	}
@@ -492,7 +518,7 @@ public class Synth extends JFrame{
 		    public int getColumnCount() {return colnum;}
 		    public Object getValueAt(int row, int col) {
 			if (tracks!=null && channels[row].track!=null) {
-			    return "Channel "+(row+1)+": "+instruments[ci].getName();
+			    return "Channel "+(row+1)+": "+cc.channel.getProgram();
 			} else {
 			    return s;
 			}
