@@ -13,10 +13,10 @@ Installation
 
 Use
 =============
-To play: click on piano keys with the mouse, or use the keyboard (qwerty row for white keys, row above for black keys)
-To record: Select a channel to which you want to record, press record button, and play. To stop recording, press stop button. Recording onto a channel with an existing track in it will overwrite the track. To clear a channel, press record and record an empty sequence. 
-To clear: Press the clear button to clear all channels. 
-To save: Press the save button. Save as a .mid file. 
+To play: click on piano keys with the mouse, or use the keyboard (qwerty row for white keys, row above for black keys)<br/>
+To record: Select a channel to which you want to record, press record button, and play. To stop recording, press stop button. Recording onto a channel with an existing track in it will overwrite the track. To clear a channel, press record and record an empty sequence. <br/>
+To clear: Press the clear button to clear all channels. <br/>
+To save: Press the save button. Save as a .mid file. <br/>
 
 Play with the synthesizer. You can either play it by using your mouse or by using your keyboard. 
 Use the QWERTY row to play the white keys (middle C starting at Q) and use the row above to play the black keys. 
