@@ -71,10 +71,7 @@ public class Synth extends JFrame{
 	x = new JPanel();
 	y = new JPanel();
 	y.add(instrumentable.getBox());
-        y.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEmptyBorder (),
-                                                            "Instruments",
-                                                            TitledBorder.CENTER,
-                                                            TitledBorder.TOP));
+        y.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEmptyBorder (),"Instruments",TitledBorder.CENTER, TitledBorder.TOP));
 	x.add(tracktable.getBox());
         x.setBorder(new EmptyBorder(0, 10, 10, 10) );
 
