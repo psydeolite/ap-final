@@ -35,7 +35,8 @@ public class Synth extends JFrame{
     Piano piano;
     Chanel[] channels;
     Chanel cc;
-    ArrayList<Track> tracks;
+    int numOfTracks;
+    //ArrayList<Track> tracks;
     Instrument[] instruments;
     int[] instrumentnums;
     int currentInstrument;
@@ -161,7 +162,7 @@ public class Synth extends JFrame{
 		
 		m.setMessage(command,cc.channelnum,n,0);
 		if (recording) {
-		    System.out.println("program change WHILE RECORDING");
+		    //System.out.println("program change WHILE RECORDING");
 		} 
 	    } else {
 		m.setMessage(command,cc.channelnum,n,100);
@@ -169,6 +170,7 @@ public class Synth extends JFrame{
 	    MidiEvent me = new MidiEvent(m, tic);
 	    
 	    cc.track.add(me);
+	    System.out.println("Channel " +cc.channelnum+" track size: "+cc.track.size());
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
@@ -186,7 +188,8 @@ public class Synth extends JFrame{
 	JButton save=new JButton("Save");
 	
 	public Recorder() {
-	    tracks=new ArrayList<Track>();
+	    numOfTracks=0;
+	    //tracks=new ArrayList<Track>();
 	    record.addActionListener(this);
 	    one.add(record);
 	    clear.addActionListener(this);
@@ -281,6 +284,7 @@ public class Synth extends JFrame{
 	    }
 	}
 	public void startRecord() {
+	    System.out.println("start recording");
 	    try {
 		seqr.open();
 		seqr.setSequence(seq);
@@ -292,7 +296,8 @@ public class Synth extends JFrame{
 		clearTrack(cc.track);
 	    }
 	    cc.track=seq.createTrack();
-	    tracks.add(cc.track);
+	    numOfTracks++;
+	    //tracks.add(cc.track);
 	    seqr.recordEnable(cc.track,cc.channelnum);
 	    stime=System.currentTimeMillis();
 	    syn.loadInstrument(instruments[currentInstrument]);
@@ -329,17 +334,27 @@ public class Synth extends JFrame{
 
 	public void clearAll() {
 	    Track current;
-	    while (tracks.size()>0) {
+	    /*while (tracks.size()>0) {
 		current=tracks.get(0);
 		seq.deleteTrack(current);
-		tracks.remove(0);
+		tracks.remove(0);*/
+	    for (int i=0;i<channels.length;i++) {
+		current=channels[i].track;
+		seq.deleteTrack(current);
+		channels[i].track=null;
+		//if (tracks.size()>0) {
+		//if (numOfTracks>0) {
+		//   numOfTracks--;
+		    //tracks.remove(0);
 	    }
+	    numOfTracks=0;
 	}
 
 	//clears individual track
 	public void clearTrack(Track t) {
-	    
+	    numOfTracks--;
 	    seq.deleteTrack(t);
+	    cc.track=null;
 	    System.out.println("deleted track");
 	}
     }
@@ -465,7 +480,7 @@ public class Synth extends JFrame{
 		    public int getRowCount() {return rownum;}
 		    public int getColumnCount() {return colnum;}
 		    public Object getValueAt(int row, int col) {
-			if (tracks!=null && channels[row].track!=null) {
+			if (numOfTracks!=0 && channels[row].track!=null) {
 			    return "Channel "+(row+1)+": "+instruments[channels[row].channel.getProgram()].getName();
 			} else {
 			    return s;
@@ -701,10 +716,10 @@ public class Synth extends JFrame{
 	    k.turnOn(k);
 	}
 	
-	public void keyRecord(Key k) {
+	/*public void keyRecord(Key k) {
 	    keySound(k);
 	    //records a sound
-	}
+	    }*/
 	
 	public Key getKey(Point p) {
 	    Key r;
