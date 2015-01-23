@@ -15,7 +15,8 @@ Use
 =============
 Play with the synthesizer. You can either play it by using your mouse or by using your keyboard. 
 Use the QWERTY row to play the white keys (middle C starting at Q) and use the row above to play the black keys. 
-Use each channel to record a different recording to use different instruments in one file. When you are done, click save to save your recording as a midi file. When you want to start over, press clear. 
+Use each channel to record a different recording to use different instruments in one file. When you are done, click save to save your recording as a .midi file. When you want to start over, press clear. To clear a channel, click on it and press record and stop. 
+
 Changes
 =====
 12/19 - created repo <br/>
