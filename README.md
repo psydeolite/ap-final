@@ -22,7 +22,7 @@ Play with the synthesizer. You can either play it by using your mouse or by usin
 Use the QWERTY row to play the white keys (middle C starting at Q) and use the row above to play the black keys. 
 Use each channel to record a different recording to use different instruments in one file. When you are done, click save to save your recording as a .midi file. When you want to start over, press clear. To clear a channel, click on it and press record and stop. 
 
-*On Windows machines, there is a visual glitch with the piano and tables.
+*On Windows machines, there is a visual glitch with the piano and tables.<br/>
 *On UNIX machines, when a key is pressed, it repeatedly turns on and off due to the way the computer responds to KeyEvents.
 Changes
 =====
