@@ -673,32 +673,62 @@ public class Synth extends JFrame{
 	public void keyPressed(KeyEvent e) {
 	    System.out.println("key is pressed");
 	    char key=e.getKeyChar();
-	    if (charKeys.containsKey(key)) {
+	    try { 
 		if (!charKeys.get(key).isOn()) {
-		    System.out.println("pressed");
-		    keyPress(charKeys.get(key));
+		    charKeys.get(key).turnOn(charKeys.get(key));
+		    repaint();
+		    pressed=true;
+		    repaint();
 		}
-	    }
+	    } catch (Error x) {}
+	    /*Key ckey;
+	    if (charKeys.containsKey(key)) {
+		ckey=charKeys.get(key);
+		if (!ckey.isOn()) {
+		    System.out.println("pressed");
+		    //keyPress(charKeys.get(key));
+		    ckey.turnOn(ckey);
+		    repaint();
+		    pressed=true;
+		    repaint();
+		}
+		}*/
 	}
 	public void keyReleased(KeyEvent e) {
 	    char key=e.getKeyChar();
+	    Key ckey;
 	    if (charKeys.containsKey(key)){
-		keyUnpress(charKeys.get(key));
+		ckey=charKeys.get(key);
+		ckey.turnOff(ckey);
+		pressed=false;
+		repaint();
+		//keyUnpress(charKeys.get(key));
 	    }
 	}
-	public void mouseClicked(MouseEvent e) {
-	    
-	}
+	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {
 	    pkey=getKey(e.getPoint());
+	    /*try {
+		 pkey.turnOn(pkey);
+		 repaint();
+		 pressed=true;
+		 repaint();
+		 } catch (Error x) {}*/
 	    if (pkey!=null) {
-		keyPress(pkey);
-	    }
+		//keyPress(pkey);
+		 pkey.turnOn(pkey);
+		 repaint();
+		 pressed=true;
+		 repaint();
+		 }
 	}
 	public void mouseReleased(MouseEvent e) {
 	    if (pkey!=null) {
 		//System.out.println("mouse released");
-		keyUnpress(pkey);
+		//keyUnpress(pkey);
+		pkey.turnOff(pkey);
+		pressed=false;
+		repaint();
 		pkey=null;
 	    }
 	    this.requestFocus();
@@ -706,25 +736,25 @@ public class Synth extends JFrame{
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 	
-	public void keyPress(Key k) {
+	/*public void keyPress(Key k) {
 	    //change color
 	    keySound(k);
 	    repaint();
 	    pressed=true;
 	    repaint();
-	}
+	    }*/
 	
-	public void keyUnpress(Key k) {
+	/*public void keyUnpress(Key k) {
 	    //change color back
 	    k.turnOff(k);
 	    pressed=false;
 	    repaint();
-	}
+	    }*/
 	
-	public void keySound(Key k) {
+	/*public void keySound(Key k) {
 	    //makes sound
 	    k.turnOn(k);
-	}
+	    }*/
 	
 	/*public void keyRecord(Key k) {
 	    keySound(k);
