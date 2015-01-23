@@ -13,10 +13,17 @@ Installation
 
 Use
 =============
+To play: click on piano keys with the mouse, or use the keyboard (qwerty row for white keys, row above for black keys)
+To record: Select a channel to which you want to record, press record button, and play. To stop recording, press stop button. Recording onto a channel with an existing track in it will overwrite the track. To clear a channel, press record and record an empty sequence. 
+To clear: Press the clear button to clear all channels. 
+To save: Press the save button. Save as a .mid file. 
+
 Play with the synthesizer. You can either play it by using your mouse or by using your keyboard. 
 Use the QWERTY row to play the white keys (middle C starting at Q) and use the row above to play the black keys. 
 Use each channel to record a different recording to use different instruments in one file. When you are done, click save to save your recording as a .midi file. When you want to start over, press clear. To clear a channel, click on it and press record and stop. 
 
+*On Windows machines, there is a visual glitch with the piano and tables.
+*On UNIX machines, when a key is pressed, it repeatedly turns on and off due to the way the computer responds to KeyEvents.
 Changes
 =====
 12/19 - created repo <br/>
