@@ -21,6 +21,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.*;
 import javax.swing.event.ListSelectionListener;
 
@@ -47,7 +48,7 @@ public class Synth extends JFrame{
     InstrumentTable instrumentable;
     TrackTable tracktable;
     private Container content;
-    private JPanel x,topbox;
+    private JPanel x,y,topbox;
     private JLabel label;
     private JFrame frame;
     private Box whole;
@@ -65,12 +66,17 @@ public class Synth extends JFrame{
         topbox.setBorder(new EmptyBorder(20, 60, 0, 0) );
         piano = new Piano();
 	piano.setFocusable(true);
-
+	instrumentable=new InstrumentTable();
 	tracktable=new TrackTable();
-	JPanel x = new JPanel();
+	x = new JPanel();
+	y = new JPanel();
+	y.add(instrumentable.getBox());
+        y.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEmptyBorder (),
+                                                            "Instruments",
+                                                            TitledBorder.CENTER,
+                                                            TitledBorder.TOP));
 	x.add(tracktable.getBox());
         x.setBorder(new EmptyBorder(0, 10, 10, 10) );
-	instrumentable=new InstrumentTable();
 
 	//set up GUI
 	whole = Box.createVerticalBox();
@@ -78,7 +84,7 @@ public class Synth extends JFrame{
      	topbox.add(piano);
 	whole.add(topbox);
 	whole.add(x);
-	whole.add(instrumentable.getBox());
+	whole.add(y);
         whole.setBorder(new EmptyBorder(10, 50, 50, 0) );
 
 	//add to container
