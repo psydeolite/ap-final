@@ -696,27 +696,36 @@ public class Synth extends JFrame{
 	public void keyPressed(KeyEvent e) {
 	    System.out.println("key is pressed");
 	    char key=e.getKeyChar();
-	    try { 
-		if (!charKeys.get(key).isOn()) {
+	    /*boolean t = false;
+	    try {
+		System.out.println("ON? "+charKeys.get(key).isOn());
+		if (!(charKeys.get(key).isOn())) {
 		    charKeys.get(key).turnOn(charKeys.get(key));
+		    System.out.println("ON2? "+charKeys.get(key).isOn());
 		    repaint();
 		    pressed=true;
 		    repaint();
 		}
-	    } catch (Error x) {}
-	    /*Key ckey;
+		} catch (Error x) {}*/
+	    Key ckey;
 	    if (charKeys.containsKey(key)) {
-		ckey=charKeys.get(key);
+		keyPress(charKeys.get(key));
+		/*ckey=charKeys.get(key);
+		System.out.println(""+ckey.isOn());
 		if (!ckey.isOn()) {
 		    System.out.println("pressed");
 		    //keyPress(charKeys.get(key));
 		    ckey.turnOn(ckey);
+		    t=ckey.isOn();
+		    //System.out.println("ON? "+ckey.isOn());
 		    repaint();
 		    pressed=true;
-		    repaint();
-		}
-		}*/
-	}
+		    repaint();*/
+	    }//else {
+		//System.out.println("NOOOOOOOOOOOT OOOOOOOOOOONNNNNNNNNNNNNNNN");
+		//}
+	    // System.out.println("On? out of ifs: "+t);*/
+	}	
 	public void keyReleased(KeyEvent e) {
 	    char key=e.getKeyChar();
 	    Key ckey;
@@ -759,13 +768,13 @@ public class Synth extends JFrame{
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 	
-	/*public void keyPress(Key k) {
+	public void keyPress(Key k) {
 	    //change color
 	    keySound(k);
 	    repaint();
 	    pressed=true;
 	    repaint();
-	    }*/
+	    }
 	
 	/*public void keyUnpress(Key k) {
 	    //change color back
@@ -774,10 +783,10 @@ public class Synth extends JFrame{
 	    repaint();
 	    }*/
 	
-	/*public void keySound(Key k) {
+	public void keySound(Key k) {
 	    //makes sound
 	    k.turnOn(k);
-	    }*/
+	    }
 	
 	/*public void keyRecord(Key k) {
 	    keySound(k);
