@@ -395,18 +395,29 @@ public class Synth extends JFrame{
 	Box box = Box.createVerticalBox();
 	JTable table;
 	String[] columnNames={"1","2","3","4"};
+	int[][] instrumentarray=new int[4][4];
+	int ccol=0;
+	int crow=0;
 	public InstrumentTable() {    
 	    //table.setShowGrid(true);
 	    //TableColumn c=table.getColumnModel().getColumn(0);
 	    //box.add(table);
 	    //c.setPreferredWidth(5);
 	    //box.add(table);
+	    int c=0;
+	    for (int i=0;i<4;i++) {
+		for (int j=0;j<4;j++) {
+		    instrumentarray[j][i]=instrumentnums[c];
+		    c++;
+		}
+	    }
 	    TableModel model = new AbstractTableModel() {
 		    public int getRowCount() {return rownum;}
 		    public int getColumnCount() {return colnum;}
 		    public Object getValueAt(int row, int col) {
 			if (instruments!=null) {
-			    return instruments[instrumentnums[row]].getName();
+			    //return instruments[instrumentnums[row]].getName();
+			    return instruments[instrumentarray[row][col]].getName();
 			} else {
 			    return Integer.toString(2);
 			}
@@ -430,24 +441,33 @@ public class Synth extends JFrame{
 			    ListSelectionModel sm=(ListSelectionModel) e.getSource();
 			    if (!sm.isSelectionEmpty()) {
 				//System.out.println("row: "+table.getSelectedRow());
-				ciindex=table.getSelectedRow();
-				System.out.println("ciindex after being selected: "+ciindex);
+				//System.out.println("col: "+table.getSelectedColumn());
+				//changeProgram(instrumentarray[table.getSelectedRow()][table.getSelectedColumn()]);
+				crow=table.getSelectedRow();
+				//ciindex=table.getSelectedRow();
+				//System.out.println("ciindex after being selected: "+ciindex);
 				//changeProgram(table.getSelectedRow());
-				changeProgram();
+				//changeProgram();
 			    } 
+			    changeProgram(instrumentarray[crow][ccol]);
 			}
 		    }
-		});
+		    });
 	    lsm=table.getColumnModel().getSelectionModel();
 	    lsm.addListSelectionListener(new ListSelectionListener() {
 		    public void valueChanged(ListSelectionEvent e) {
 			ListSelectionModel sm=(ListSelectionModel) e.getSource();
 			if (!sm.isSelectionEmpty()) {
 			    System.out.println("colnum: "+table.getSelectedColumn());
+			    //changeProgram(instrumentarray[table.getSelectedRow()][table.getSelectedColumn()]);
+			    ccol=table.getSelectedColumn();
 			}
+			changeProgram(instrumentarray[crow][ccol]);
 		    }
 		});
+	    //public void 
 	    table.setRowSelectionInterval(0,0);
+	    table.setColumnSelectionInterval(0,0);
 	    table.setCellSelectionEnabled(true);
 	    table.setColumnSelectionAllowed(true);
 	    table.setRowMargin(5);
@@ -484,7 +504,7 @@ public class Synth extends JFrame{
 	    return box;
 	}
 	
-	public void changeProgram() {
+	public void changeProgram(int i) {
 	    //ci=select;
 	    //System.out.println(ci);
 	    if (instruments!=null) {
@@ -492,9 +512,10 @@ public class Synth extends JFrame{
 	    } else {
 		System.out.println("no instruments to speak of");
 	    }
-	    cc.channel.programChange(instrumentnums[ciindex]);
+	    //cc.channel.programChange(instrumentnums[ciindex]);
+	    cc.channel.programChange(i);
 	    if (recording) {
-		addEvent(PROGRAM,instrumentnums[ciindex]);
+		addEvent(PROGRAM,i);
 	    }
 	    
 	}
