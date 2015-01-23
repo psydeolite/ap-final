@@ -49,7 +49,8 @@ public class Synth extends JFrame{
     InstrumentTable instrumentable;
     TrackTable tracktable;
     private Container content;
-    private JPanel x,y,topbox;
+    //private JPanel x,y,topbox;
+    private JPanel topbox, bottombox, instAndChan;
     private JLabel label;
     private JFrame frame;
     private Box whole;
@@ -60,29 +61,50 @@ public class Synth extends JFrame{
 	setSize(300,300);
         frame = new JFrame("Do-Re-Midi");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+	frame.getContentPane().setBackground(Color.darkGray);
+	frame.setResizable(false);
         // initialize 
 	recorder=new Recorder();
-        topbox = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        topbox.setBorder(new EmptyBorder(20, 60, 0, 0) );
-        piano = new Piano();
-	piano.setFocusable(true);
+	piano=new Piano();
 	instrumentable=new InstrumentTable();
 	tracktable=new TrackTable();
-	x = new JPanel();
-	y = new JPanel();
-	y.add(instrumentable.getBox());
-        y.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEmptyBorder (),"Instruments",TitledBorder.CENTER, TitledBorder.TOP));
-	x.add(tracktable.getBox());
-        x.setBorder(new EmptyBorder(0, 10, 10, 10) );
+       
+	topbox = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topbox.setBorder(new EmptyBorder(20, 60, 0, 0) );
+	bottombox=new JPanel(new FlowLayout(FlowLayout.CENTER));
+	instAndChan=new JPanel(new FlowLayout(FlowLayout.LEADING, 15,0));
+	bottombox.setBorder(new EmptyBorder(20,60,0,0));
+	piano.setFocusable(true);
+	//instAndChan=Box.createHorizontalBox();
+
+	topbox.add(piano);
+	topbox.add(recorder.getBox());
+	//instAndChan.add(tracktable.getBox());
+	//instAndChan.add(instrumentable.getBox());
+	instAndChan.add(tracktable.getBox());
+	instAndChan.add(instrumentable.getBox());
+	instAndChan.setOpaque(true);
+	instAndChan.setBackground(Color.darkGray);
+	bottombox.add(instAndChan);
+	bottombox.setBackground(Color.darkGray);
+	//x = new JPanel();
+	//y = new JPanel();
+	//y.add(instrumentable.getBox());
+        //y.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEmptyBorder (),"Instruments",TitledBorder.CENTER, TitledBorder.TOP));
+	//y.setBorder(BorderFactory.createEtchedBorder());
+	//x.add(tracktable.getBox());
+        //x.setBorder(new EmptyBorder(0, 10, 10, 10) );
 
 	//set up GUI
 	whole = Box.createVerticalBox();
-	whole.add(recorder.getBox());
+	//whole.add(recorder.getBox());
      	topbox.add(piano);
+	topbox.setBackground(Color.darkGray);
 	whole.add(topbox);
-	whole.add(x);
-	whole.add(y);
+	whole.add(recorder.getBox());
+	whole.add(bottombox);
+	//whole.add(x);
+	//whole.add(y);
         whole.setBorder(new EmptyBorder(10, 50, 50, 0) );
 
 	//add to container
@@ -389,7 +411,7 @@ public class Synth extends JFrame{
 		    public Object getValueAt(int row, int col) {
 			if (instruments!=null) {
 			    //return instruments[instrumentnums[row]].getName();
-			    return instruments[instrumentarray[row][col]].getName();
+			    return " "+instruments[instrumentarray[row][col]].getName();
 			} else {
 			    return Integer.toString(2);
 			}
@@ -440,8 +462,8 @@ public class Synth extends JFrame{
 	    for (int i=0;i<4;i++) {
 		TableColumn column=table.getColumn(table.getColumnName(i));
 		
-		column.setMinWidth(150);
-		column.setMaxWidth(150);
+		column.setMinWidth(100);
+		column.setMaxWidth(100);
 	    }
 	    box.add(header);
 	    box.add(table);
@@ -479,7 +501,7 @@ public class Synth extends JFrame{
 	private int colnum=1;
 	private int rownum=4;
 	private String[] columnName={"Channels"};
-	private String s=new String("Empty");
+	private String s=new String(" Empty");
 	    
 
 	public TrackTable() {
@@ -489,7 +511,7 @@ public class Synth extends JFrame{
 		    public int getColumnCount() {return colnum;}
 		    public Object getValueAt(int row, int col) {
 			if (numOfTracks!=0 && channels[row].track!=null) {
-			    return "Channel "+(row+1)+": "+instruments[channels[row].channel.getProgram()].getName();
+			    return " Channel "+(row+1)+": "+instruments[channels[row].channel.getProgram()].getName();
 			} else {
 			    return s;
 			}
@@ -523,8 +545,8 @@ public class Synth extends JFrame{
 	    header.setBackground(Color.cyan);
 	    table.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
 	    TableColumn columnA = table.getColumn(table.getColumnName(0));
-	    columnA.setMinWidth(200);
-	    columnA.setMaxWidth(200);
+	    columnA.setMinWidth(145);
+	    columnA.setMaxWidth(145);
 	    box.add(header);
 	    box.add(table);
 		
@@ -641,7 +663,8 @@ public class Synth extends JFrame{
 	    Graphics2D g = (Graphics2D) thing;
 	    Dimension d = getSize();
 	    
-	    g.setBackground(getBackground());
+	    //g.setBackground(getBackground());
+	    g.setBackground(Color.darkGray);
 	    g.clearRect(0, 0, 500, 700);
 	    //g.clearRect(0,0,520,700);
 	    g.setColor(Color.white);
