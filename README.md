@@ -3,7 +3,7 @@ Do-Re-Midi
 
 Mariya Gedrich and Rabia Akhtar Period 2
 
-This project includes a Synthesizer. There are 16 types of instruments you can play using the keyboard. You can record, play, and save what you do in .mid files. 
+This project includes a Synthesizer. There are 16 types of instruments you can play using the keyboard. You can record, play, and save what you do in .midi files. 
 
 Installation
 ==========
@@ -16,7 +16,6 @@ Use
 Play with the synthesizer. You can either play it by using your mouse or by using your keyboard. 
 Use the QWERTY row to play the white keys (middle C starting at Q) and use the row above to play the black keys. 
 Use each channel to record a different recording to use different instruments in one file. When you are done, click save to save your recording as a midi file. When you want to start over, press clear. 
-
 Changes
 =====
 12/19 - created repo <br/>
@@ -41,5 +40,6 @@ Changes
 01/20 - button bug and instrument loading bug fixed. persisting issues: random images of piano and table appear on click, playback of recorded stuff does not acknowledge program change, and much to my anguish, the files created by the program do not play, which actually makes no sense because a saved file that played yesterday on my computer does not play anymore?? - MG <br/>
 01/21 - fixed GUI, changed layout, added border, moved things around, changed colors, etc. etc. - RA <br/>
 01/21 - added table for tracks (soon to be channels because I discovered a **major** bug with that), saving works, program change acknowledged when recording. also added keylistener. remaining things: ANNOTATE IT all nice like in javadocs format, fix bug - MG <br/> 
-01/22 - fixed layout, cleaned up code. Goals: do java docs stuff tonight. - RA <br/>
+01/22 - fixed layout, cleaned up code. Goals: do docs stuff tonight. - RA <br/>
 01/22 - fixed bugs (channel vs. track, program change vs. channel table), changed layout and background color. to do: documentation and cleanup, possibly center the instrument/channeltable part. - MG <br/>
+01/23 - centered the instrument/channeltable - RA <br/>
