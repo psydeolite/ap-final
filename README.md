@@ -48,3 +48,4 @@ Development log
 **01/22 -** fixed layout, cleaned up code. Goals: do docs stuff tonight. - RA <br/>
 **01/22 -** fixed bugs (channel vs. track, program change vs. channel table), changed layout and background color. to do: documentation and cleanup, possibly center the instrument/channeltable part. - MG <br/>
 **01/23 -** centered the instrument/channeltable - RA <br/>
+**01/23 -** Minor fixes, full documentation - MG
