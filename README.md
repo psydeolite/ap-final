@@ -3,7 +3,7 @@ Do-Re-Midi
 
 Mariya Gedrich and Rabia Akhtar Period 2
 
-This project includes a Piano, Instrument Selection Table, a Channel Selection Table, and buttons for various actions. There are 16 types of instruments you can play using the piano. You can record, play, and save what you do in .mid files. 
+This project includes a Piano, Instrument Selection Table, a Channel Selection Table, and buttons for various actions. There are 16 types of instruments you can play using the piano. You can record, play, and save what you do in .mid files. Take a listen to the sample MIDI file (bach.mid) created by this very synthesizer!
 
 Installation
 ==========
