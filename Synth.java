@@ -12,6 +12,7 @@ All classes are placed into this file for easy viewing and cross usage purposes.
 
 import java.io.*;
 import java.util.*;
+import java.lang.*;
 import javax.sound.midi.*;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Synthesizer;
@@ -35,6 +36,7 @@ public class Synth extends JFrame{
     private Piano piano;
     private Chanel[] channels;
     private Chanel cc;
+    private MidiChannel metronome;
     private int numOfTracks;
     private Instrument[] instruments;
     private int[] instrumentnums;
@@ -53,7 +55,7 @@ public class Synth extends JFrame{
     private JFrame frame;
     private Box whole;
 
-    /*sets up the GUI  */ 
+    //Constructor: sets up the GUI
     public Synth() {
 	open();
 	setSize(300,300);
@@ -61,57 +63,49 @@ public class Synth extends JFrame{
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.getContentPane().setBackground(Color.darkGray);
 	frame.setResizable(false);
-        // initialize 
+        
+	//Initializes parts of the Synthesizer
 	recorder=new Recorder();
 	piano=new Piano();
 	instrumentable=new InstrumentTable();
 	channeltable=new ChannelTable();
        
+	//Creates all the visual components
 	topbox = new JPanel(new FlowLayout(FlowLayout.CENTER));
         topbox.setBorder(new EmptyBorder(20, 60, 0, 0) );
-	bottombox=new JPanel(new FlowLayout(FlowLayout.CENTER));
-	instAndChan=new JPanel(new FlowLayout(FlowLayout.LEADING, 15,0));
-	bottombox.setBorder(new EmptyBorder(20,0,0,0));
-	piano.setFocusable(true);
-	
 	topbox.add(piano);
-	topbox.add(recorder.getBox());
-	
+	topbox.setBackground(Color.darkGray);
+	instAndChan=new JPanel(new FlowLayout(FlowLayout.LEADING, 15,0));
 	instAndChan.add(channeltable.getBox());
 	instAndChan.add(instrumentable.getBox());
 	instAndChan.setOpaque(true);
 	instAndChan.setBackground(Color.darkGray);
+	bottombox=new JPanel(new FlowLayout(FlowLayout.CENTER));
+	bottombox.setBorder(new EmptyBorder(20,0,0,0));
 	bottombox.add(instAndChan);
 	bottombox.setBackground(Color.darkGray);
-	
-	//set up GUI
 	whole = Box.createVerticalBox();
-	topbox.add(piano);
-	topbox.setBackground(Color.darkGray);
 	whole.add(topbox);
 	whole.add(recorder.getBox());
 	whole.add(bottombox);
-	
-	
-        whole.setBorder(new EmptyBorder(10, 50, 50, 0) );
+	whole.setBorder(new EmptyBorder(10, 50, 50, 0) );
 
-	//add to container
+	//Adds to container
 	content = frame.getContentPane();
 	content.setLayout(new BorderLayout());
 	content.add(whole, BorderLayout.CENTER);
 	frame.pack();
 	frame.setVisible(true);
-	
+	piano.setFocusable(true);
 	piano.requestFocus();
     }
 
-    /* gets sound */ 
+    //Method: Initializes all the necessary sound components: Synthesizer, Sequencer, Sequence, Soundbank, and MidiChannels  
     public void open() {
-
 	try {
 	    syn=MidiSystem.getSynthesizer();
 	    if (syn==null) {
-		System.out.println("can't open synth");
+		System.out.println("ERROR: Can't open synthesizer");
 		return;
 	    } else {     
 		syn.open();
@@ -119,7 +113,7 @@ public class Synth extends JFrame{
 		seqr=MidiSystem.getSequencer();
 		Soundbank s=syn.getDefaultSoundbank();
 		if (s!=null) {
-		    instruments=syn.getDefaultSoundbank().getInstruments();
+		    instruments=s.getInstruments();
 		    instrumentnums=new int[16];
 		    instrumentnums[0]=0;
 		    instrumentnums[1]=11;
@@ -142,6 +136,8 @@ public class Synth extends JFrame{
 		}
 		MidiChannel mc[]=syn.getChannels();
 		cc=new Chanel(mc[0],1);
+		metronome=mc[5];
+		metronome.programChange(115);
 		channels=new Chanel[4];
 		for (int i=0;i<4;i++) {
 		  channels[i]=new Chanel(mc[i],i);
@@ -155,6 +151,7 @@ public class Synth extends JFrame{
 	}
     }
 
+    //Method: closes the sound components 
     public void close(){
 	if (syn!=null) {
 	    syn.close();
@@ -163,32 +160,26 @@ public class Synth extends JFrame{
 	instruments=null;
     }
     
+    //Method: adds a MidiEvent to a selected channel's track. Takes command parameter (earlier defined as an int in the Synth class) and an int that is the command's argument. 
     public void addEvent(int command, int n) {
 	ShortMessage m=new ShortMessage();
 	long dur=System.currentTimeMillis()-stime;
 	long tic=dur*seq.getResolution()/500;
 	try {
-	    if (command==192) {
-		
+	    if (command==PROGRAM) {
 		m.setMessage(command,cc.getChannelNum(),n,0);
-		if (recording) {
-		} 
 	    } else {
 		m.setMessage(command,cc.getChannelNum(),n,100);
 	    }
 	    MidiEvent me = new MidiEvent(m, tic);
-	    
 	    cc.getTrack().add(me);
-	    System.out.println("Channel " +cc.getChannelNum()+" track size: "+cc.getTrack().size());
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	
     }
 
 
-    /* class Recorder records what you play
-       and allows you to save it*/ 
+    /* Class: allows you to record, clear, play, and save tracks */ 
     class Recorder implements ActionListener {
 	private Box one=Box.createHorizontalBox();
 	private JButton record=new JButton("Record");
@@ -196,9 +187,9 @@ public class Synth extends JFrame{
 	private JButton play =new JButton("Play");
 	private JButton save=new JButton("Save");
 	
+	//Constructor: sets up buttons in GUI, creates a sequence for recording
 	public Recorder() {
 	    numOfTracks=0;
-	    
 	    record.addActionListener(this);
 	    one.add(record);
 	    clear.addActionListener(this);
@@ -213,9 +204,12 @@ public class Synth extends JFrame{
 		e.printStackTrace();
 	    }
 	}
+	
 	public Box getBox() {
 	    return one;
 	}
+
+	//Method: decides on button action, self explanatory
 	public void actionPerformed(ActionEvent a) {
 	    JButton button = (JButton) a.getSource();
 	    if (button.equals(play)) {
@@ -228,7 +222,7 @@ public class Synth extends JFrame{
 			save.setEnabled(false);
 			piano.requestFocus();
 		    } else {
-			System.out.println("can't play track, null");
+			System.out.println("ERROR: Can't play, null track");
 		    }
 		} else {
 		    play.setText("Play");
@@ -270,6 +264,7 @@ public class Synth extends JFrame{
 	    }
 	}
 	
+	//Method: opens up a Save dialog and allows you to save the recorded sequence as a .mid file
 	public void save() {
 	    File f=new File("file.mid");
 	    JFileChooser fc=new JFileChooser(f);
@@ -292,15 +287,16 @@ public class Synth extends JFrame{
 		    try {
 			MidiSystem.write(seq,types[0],out);
 		    } catch (Exception e) {
-			System.out.println("Problems writing file");
+			System.out.println("ERROR: Problems writing file");
 		    }
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
 	    }
 	}
+	
+	//Method: starts recording 
 	public void startRecord() {
-	    
 	    try {
 		seqr.open();
 		seqr.setSequence(seq);
@@ -308,20 +304,23 @@ public class Synth extends JFrame{
 		e.printStackTrace();
 	    }
 	    recording=true;
+	    //If the selected channel's track is not empty, it is cleared in order to be overwritten
 	    if (cc.getTrack()!=null) {
 		clearTrack(cc.getTrack());
 	    }
 	    cc.setTrack(seq.createTrack());
 	    numOfTracks++;
-	    
 	    seqr.recordEnable(cc.getTrack(),cc.getChannelNum());
 	    stime=System.currentTimeMillis();
 	    syn.loadInstrument(instruments[currentInstrument]);
+	    //Adds a programChange event to the track to set the channel's instrument
 	    addEvent(PROGRAM,currentInstrument);
-		seqr.start();
-		playing=true;
+	    //Plays existing tracks while you record
+	    seqr.start();
+	    playing=true;
 	}
 
+	//Method: Stops recording
 	public void stopRecord() {
 	    recording=false;
 	    if (playing==true) {
@@ -331,26 +330,28 @@ public class Synth extends JFrame{
 	    }
 	}
 
+	//Method: Starts playback of existing tracks
 	public void startPlay() {
 	    playing=true;
 	    try {
 		seqr.open();
 		seqr.setSequence(seq);
+		seqr.start();
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }	   
-	    seqr.start();
 	}
 
+	//Method: Stops playback
 	public void stopPlay() {
 	    playing=false;
 	    seqr.stop();
 	    seqr.close();
 	}
 
+	//Method: Clears all tracks in all channels.
 	public void clearAll() {
 	    Track current;
-	    
 	    for (int i=0;i<channels.length;i++) {
 		current=channels[i].track;
 		seq.deleteTrack(current);
@@ -359,7 +360,7 @@ public class Synth extends JFrame{
 	    numOfTracks=0;
 	}
 
-	//clears individual track
+	//Method: Clears an individual track
 	public void clearTrack(Track t) {
 	    numOfTracks--;
 	    seq.deleteTrack(t);
@@ -367,7 +368,8 @@ public class Synth extends JFrame{
 	    
 	}
     }
-    /* creates instrument table */
+    
+    /* Class: Allows you to select an instrument from 16 options */
     class InstrumentTable {
 	private int rownum=4;
 	private int colnum=4;
@@ -377,7 +379,10 @@ public class Synth extends JFrame{
 	private int[][] instrumentarray=new int[4][4];
 	private int ccol=0;
 	private int crow=0;
+	
+	//Constructor: Creates the table of 16 instruments
 	public InstrumentTable() {    
+	    //Creates 2D array for easier cell selection and navigation
 	    int c=0;
 	    for (int i=0;i<4;i++) {
 		for (int j=0;j<4;j++) {
@@ -385,6 +390,7 @@ public class Synth extends JFrame{
 		    c++;
 		}
 	    }
+	    //Constructs the table 
 	    TableModel model = new AbstractTableModel() {
 		    public int getRowCount() {return rownum;}
 		    public int getColumnCount() {return colnum;}
@@ -404,8 +410,9 @@ public class Synth extends JFrame{
 	
 	
 	    table=new JTable(model);
-	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	       
+	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); 
+	  
+	    //Sets action for row selection
 	    ListSelectionModel lsm=table.getSelectionModel();
 	    lsm.addListSelectionListener(new ListSelectionListener() {
 		    public void valueChanged(ListSelectionEvent e) {
@@ -418,6 +425,7 @@ public class Synth extends JFrame{
 			}
 		    }
 		    });
+	    //Sets action for column selection
 	    lsm=table.getColumnModel().getSelectionModel();
 	    lsm.addListSelectionListener(new ListSelectionListener() {
 		    public void valueChanged(ListSelectionEvent e) {
@@ -429,7 +437,7 @@ public class Synth extends JFrame{
 			changeProgram(instrumentarray[crow][ccol]);
 		    }
 		});
-	     
+	    //Sets various table attributes
 	    table.setRowSelectionInterval(0,0);
 	    table.setColumnSelectionInterval(0,0);
 	    table.setCellSelectionEnabled(true);
@@ -440,7 +448,6 @@ public class Synth extends JFrame{
 	    table.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
 	    for (int i=0;i<4;i++) {
 		TableColumn column=table.getColumn(table.getColumnName(i));
-		
 		column.setMinWidth(100);
 		column.setMaxWidth(100);
 	    }
@@ -453,27 +460,19 @@ public class Synth extends JFrame{
 	    return box;
 	}
 	
+	//Method: Changes the loaded instrument and changes the current channel's instrument. If it is recording, adds a programChange event to the track
 	public void changeProgram(int i) {
-	    
-	    
 	    currentInstrument=i;
-	    if (instruments!=null) {
-		syn.loadInstrument(instruments[currentInstrument]);
-	    } else {
-		System.out.println("no instruments to speak of");
-	    }
-	    
+	    syn.loadInstrument(instruments[currentInstrument]);
 	    cc.getChannel().programChange(currentInstrument);
 	    if (recording) {
 		addEvent(PROGRAM,currentInstrument);
 	    }
-	    piano.requestFocus();
-	    
-	}
-	
-	
+	    piano.requestFocus();    
+	}	
     }
     
+    /* Class: Allows you to select a channel to which you wish to record a track */
     class ChannelTable {
 	private JTable table;
 	private Box box=Box.createVerticalBox();
@@ -482,10 +481,9 @@ public class Synth extends JFrame{
 	private String[] columnName={"Channels"};
 	private String s=new String(" Empty");
 	    
-
+	//Constructor: Sets up the table, as in the previous class. 
 	public ChannelTable() {
-		
-	    TableModel model = new AbstractTableModel() {
+		TableModel model = new AbstractTableModel() {
 		    public int getRowCount() {return rownum;}
 		    public int getColumnCount() {return colnum;}
 		    public Object getValueAt(int row, int col) {
@@ -534,13 +532,10 @@ public class Synth extends JFrame{
 	public Box getBox() {
 	    return box;
 	}
-	    
-
-	
     }
     
+    /* Class: Stores information about each channel */
     class Chanel {
-	//actual channel stuff
 	private MidiChannel channel;
 	private int channelnum;
 	private Track track;
@@ -562,29 +557,30 @@ public class Synth extends JFrame{
 	}
     }
     
-   
+    /*Class: Represents each key in the piano */
     class Key extends Rectangle {
 	private boolean on=false;
 	private int keynum;
-	/* creates each individual key by using the properties of rectangle */
+	//Constructor: Creates new rectangle with position (x,y), size (wh), and the MIDI note number n
 	public Key(int x, int y, int w, int h, int n) {
 	    super(x,y,w,h);
 	    keynum=n;
 	}
+
 	public boolean isOn() {
-	    return on;
-	    
+	    return on;   
 	}
+
+	//Method: Turns on the MIDI note associated with the Key. If it is recording, adds NOTEON event to track
 	public void turnOn(Key k) {
-	    
 	    on=true;
 	    cc.getChannel().noteOn(k.keynum, 100);
 	    if (recording) {
 		addEvent(NOTEON, k.keynum);
 	    }
 	}
+
 	public void turnOff(Key k) {
-	    
 	    on=false;
 	    cc.getChannel().noteOff(k.keynum);
 	    if (recording) {
@@ -593,45 +589,39 @@ public class Synth extends JFrame{
 	}
     }
     
+    /* Class: Creates an interactive piano */
     class Piano extends JPanel implements MouseListener, KeyListener {
-	//boolean pressed=false;
 	ArrayList<Key> whitekeys=new ArrayList<Key>();
 	ArrayList<Key> blackkeys=new ArrayList<Key>(); 
 	ArrayList<Key> keys=new ArrayList<Key>();
+	//Map linking keyboard characters to Piano Keys for use with the KeyListener
 	HashMap<Character,Key> charKeys=new HashMap<Character,Key>();
 	char[] blackchars={'2','3','5','6','7','9','0','=','\u0008'};
 	char[] whitechars={'q','w','e','r','t','y','u','i','o','p','[',']',(char) 92};
 	Key pkey;
 	
-	/* Piano sets note values for each each key and determines thier positioning */
-	
+	//Constructor: Creates arrays of white and black keys
 	public Piano() {
 	    setPreferredSize(new Dimension(600,240));
 	    setBorder(BorderFactory.createLineBorder(Color.black));
-	    
+	    //Increases by position and pitch number, starting at middle C (60)
 	    for (int i=0, x = 0, y= 0, keystart=60;i<22;i++, x+=23, y+=40,keystart++) {
-		//makes key, starting keynum at 60 and incrementing by one
-		//adds to keys and white/black array, depending on pitch
-		
+		//Checks if the pitch number corresponds to a black key
 		if (keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70 && keystart!=73 && keystart!=75 && keystart!=78 && keystart!=80) { 
 		    whitekeys.add(new Key(y,0,40,230,keystart));
-		    
-		    
 		} else {
 		    if (keystart==61) {
 			blackkeys.add(new Key(26,0,25,150,keystart));
-			
 		    } else {
 			blackkeys.add(new Key(x,0,25,150,keystart));
-			
-			
 		    }
 		    y-=40;
 		}
-		
 	    }
 	    keys.addAll(whitekeys);
 	    keys.addAll(blackkeys);
+
+	    //Maps characters to appropriate keys
 	    for (int i=0;i<blackchars.length;i++) {
 		charKeys.put(blackchars[i],blackkeys.get(i));
 	    }
@@ -641,13 +631,11 @@ public class Synth extends JFrame{
 	    
 	    addKeyListener(this);
 	    addMouseListener(this);
-	    this.requestFocus();
-	    
+	    this.requestFocus();	    
 	}
 	
 	
-	/* paint takes the array we filled in piano 
-	   and paints it onto the GUI into a piano shape*/
+	//Method: Takes the array we filled in piano and paints it onto the GUI into a piano shape
 	public void paint (Graphics thing)
 	{
 	    Graphics2D g = (Graphics2D) thing;
@@ -677,9 +665,10 @@ public class Synth extends JFrame{
 		    g.setColor(Color.black);
 		    g.fill(key);
 		}
-	    }
-	    
+	    }   
 	}
+
+	//Methods: These deal with the KeyListener. Turn on when an appropriate character is pressed, off when released. 
 	public void keyTyped(KeyEvent e) {}
 	public void keyPressed(KeyEvent e) {
 	    char key=e.getKeyChar();
@@ -694,14 +683,14 @@ public class Synth extends JFrame{
 	    char key=e.getKeyChar();
 	    if (charKeys.containsKey(key)){
 		charKeys.get(key).turnOff(charKeys.get(key));
-		repaint();
-		
+		repaint();	
 	    }
 	}
+
+	//Methods: These deal with the MouseListener. 
 	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {
 	    pkey=getKey(e.getPoint());
-	    
 	    if (pkey!=null) {
 		pkey.turnOn(pkey);
 		repaint();
@@ -718,6 +707,7 @@ public class Synth extends JFrame{
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 	
+	//Method: Used in MouseListener to get the location of a click, checks if the click falls within the coordinates of a Key.
 	public Key getKey(Point p) {
 	    Key r;
 	    for (int j=0; j<blackkeys.size();j++) {
@@ -732,9 +722,10 @@ public class Synth extends JFrame{
 	    }
 	    return null;
 	}
-    }
-    
-}
+
+    } //End Piano class
+  
+} //End Synth class
 
 	
 	
