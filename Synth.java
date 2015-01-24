@@ -214,7 +214,7 @@ public class Synth extends JFrame{
 	    JButton button = (JButton) a.getSource();
 	    if (button.equals(play)) {
 		if (!playing) {
-		    if (cc.getTrack()!=null) {
+		    if (numOfTracks!=0) {
 			play.setText("Stop");
 			startPlay();
 			record.setEnabled(false);
@@ -222,7 +222,7 @@ public class Synth extends JFrame{
 			save.setEnabled(false);
 			piano.requestFocus();
 		    } else {
-			System.out.println("ERROR: Can't play, null track");
+			System.out.println("ERROR: Can't play, no tracks");
 		    }
 		} else {
 		    play.setText("Play");
@@ -250,9 +250,7 @@ public class Synth extends JFrame{
 		    piano.requestFocus();
 		}
 	    } else if (button.equals(clear)) {
-		if (cc.getTrack()!=null && cc.getTrack().size()!=0) {
-		    clearAll();
-		} 
+		clearAll();
 		piano.requestFocus();
 	    } else if (button.equals(save)) {
 		try {
@@ -488,7 +486,7 @@ public class Synth extends JFrame{
 		    public int getColumnCount() {return colnum;}
 		    public Object getValueAt(int row, int col) {
 			if (numOfTracks!=0 && channels[row].track!=null) {
-			    return " Channel "+(row+1)+": "+instruments[channels[row].channel.getProgram()].getName();
+			    return " Channel "+(row+1);
 			} else {
 			    return s;
 			}
