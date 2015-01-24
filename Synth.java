@@ -36,7 +36,6 @@ public class Synth extends JFrame{
     Chanel[] channels;
     Chanel cc;
     int numOfTracks;
-    //ArrayList<Track> tracks;
     Instrument[] instruments;
     int[] instrumentnums;
     int currentInstrument;
@@ -49,7 +48,6 @@ public class Synth extends JFrame{
     InstrumentTable instrumentable;
     TrackTable tracktable;
     private Container content;
-    //private JPanel x,y,topbox;
     private JPanel topbox, bottombox, instAndChan;
     private JLabel label;
     private JFrame frame;
@@ -75,36 +73,26 @@ public class Synth extends JFrame{
 	instAndChan=new JPanel(new FlowLayout(FlowLayout.LEADING, 15,0));
 	bottombox.setBorder(new EmptyBorder(20,60,0,0));
 	piano.setFocusable(true);
-	//instAndChan=Box.createHorizontalBox();
-
+	
 	topbox.add(piano);
 	topbox.add(recorder.getBox());
-	//instAndChan.add(tracktable.getBox());
-	//instAndChan.add(instrumentable.getBox());
+	
 	instAndChan.add(tracktable.getBox());
 	instAndChan.add(instrumentable.getBox());
 	instAndChan.setOpaque(true);
 	instAndChan.setBackground(Color.darkGray);
 	bottombox.add(instAndChan);
 	bottombox.setBackground(Color.darkGray);
-	//x = new JPanel();
-	//y = new JPanel();
-	//y.add(instrumentable.getBox());
-        //y.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEmptyBorder (),"Instruments",TitledBorder.CENTER, TitledBorder.TOP));
-	//y.setBorder(BorderFactory.createEtchedBorder());
-	//x.add(tracktable.getBox());
-        //x.setBorder(new EmptyBorder(0, 10, 10, 10) );
-
+	
 	//set up GUI
 	whole = Box.createVerticalBox();
-	//whole.add(recorder.getBox());
-     	topbox.add(piano);
+	topbox.add(piano);
 	topbox.setBackground(Color.darkGray);
 	whole.add(topbox);
 	whole.add(recorder.getBox());
 	whole.add(bottombox);
-	//whole.add(x);
-	//whole.add(y);
+	
+	
         whole.setBorder(new EmptyBorder(10, 50, 50, 0) );
 
 	//add to container
@@ -184,7 +172,6 @@ public class Synth extends JFrame{
 		
 		m.setMessage(command,cc.channelnum,n,0);
 		if (recording) {
-		    //System.out.println("program change WHILE RECORDING");
 		} 
 	    } else {
 		m.setMessage(command,cc.channelnum,n,100);
@@ -211,7 +198,7 @@ public class Synth extends JFrame{
 	
 	public Recorder() {
 	    numOfTracks=0;
-	    //tracks=new ArrayList<Track>();
+	    
 	    record.addActionListener(this);
 	    one.add(record);
 	    clear.addActionListener(this);
@@ -313,7 +300,7 @@ public class Synth extends JFrame{
 	    }
 	}
 	public void startRecord() {
-	    System.out.println("start recording");
+	    
 	    try {
 		seqr.open();
 		seqr.setSequence(seq);
@@ -326,7 +313,7 @@ public class Synth extends JFrame{
 	    }
 	    cc.track=seq.createTrack();
 	    numOfTracks++;
-	    //tracks.add(cc.track);
+	    
 	    seqr.recordEnable(cc.track,cc.channelnum);
 	    stime=System.currentTimeMillis();
 	    syn.loadInstrument(instruments[currentInstrument]);
@@ -363,18 +350,11 @@ public class Synth extends JFrame{
 
 	public void clearAll() {
 	    Track current;
-	    /*while (tracks.size()>0) {
-		current=tracks.get(0);
-		seq.deleteTrack(current);
-		tracks.remove(0);*/
+	    
 	    for (int i=0;i<channels.length;i++) {
 		current=channels[i].track;
 		seq.deleteTrack(current);
 		channels[i].track=null;
-		//if (tracks.size()>0) {
-		//if (numOfTracks>0) {
-		//   numOfTracks--;
-		    //tracks.remove(0);
 	    }
 	    numOfTracks=0;
 	}
@@ -384,7 +364,7 @@ public class Synth extends JFrame{
 	    numOfTracks--;
 	    seq.deleteTrack(t);
 	    cc.track=null;
-	    System.out.println("deleted track");
+	    
 	}
     }
     /* creates instrument table */
@@ -410,7 +390,7 @@ public class Synth extends JFrame{
 		    public int getColumnCount() {return colnum;}
 		    public Object getValueAt(int row, int col) {
 			if (instruments!=null) {
-			    //return instruments[instrumentnums[row]].getName();
+			    
 			    return " "+instruments[instrumentarray[row][col]].getName();
 			} else {
 			    return Integer.toString(2);
@@ -443,14 +423,13 @@ public class Synth extends JFrame{
 		    public void valueChanged(ListSelectionEvent e) {
 			ListSelectionModel sm=(ListSelectionModel) e.getSource();
 			if (!sm.isSelectionEmpty()) {
-			    //System.out.println("colnum: "+table.getSelectedColumn());
-			    //changeProgram(instrumentarray[table.getSelectedRow()][table.getSelectedColumn()]);
+			    
 			    ccol=table.getSelectedColumn();
 			}
 			changeProgram(instrumentarray[crow][ccol]);
 		    }
 		});
-	    //public void 
+	     
 	    table.setRowSelectionInterval(0,0);
 	    table.setColumnSelectionInterval(0,0);
 	    table.setCellSelectionEnabled(true);
@@ -475,15 +454,15 @@ public class Synth extends JFrame{
 	}
 	
 	public void changeProgram(int i) {
-	    //ci=select;
-	    //System.out.println(ci);
+	    
+	    
 	    currentInstrument=i;
 	    if (instruments!=null) {
 		syn.loadInstrument(instruments[currentInstrument]);
 	    } else {
 		System.out.println("no instruments to speak of");
 	    }
-	    //cc.channel.programChange(instrumentnums[ciindex]);
+	    
 	    cc.channel.programChange(currentInstrument);
 	    if (recording) {
 		addEvent(PROGRAM,currentInstrument);
@@ -492,7 +471,7 @@ public class Synth extends JFrame{
 	    
 	}
 	
-	//instrument selection
+	
     }
     
     class TrackTable {
@@ -557,7 +536,7 @@ public class Synth extends JFrame{
 	}
 	    
 
-	//channel stuff
+	
     }
     
     class Chanel {
@@ -585,7 +564,7 @@ public class Synth extends JFrame{
 	    
 	}
 	public void turnOn(Key k) {
-	    System.out.println("turnOn");
+	    
 	    on=true;
 	    cc.channel.noteOn(k.keynum, 100);
 	    if (recording) {
@@ -593,7 +572,7 @@ public class Synth extends JFrame{
 	    }
 	}
 	public void turnOff(Key k) {
-	    System.out.println("turnOff");
+	    
 	    on=false;
 	    cc.channel.noteOff(k.keynum);
 	    if (recording) {
@@ -617,7 +596,7 @@ public class Synth extends JFrame{
 	public Piano() {
 	    setPreferredSize(new Dimension(600,240));
 	    setBorder(BorderFactory.createLineBorder(Color.black));
-	    //int keystart=60;
+	    
 	    for (int i=0, x = 0, y= 0, keystart=60;i<22;i++, x+=23, y+=40,keystart++) {
 		//makes key, starting keynum at 60 and incrementing by one
 		//adds to keys and white/black array, depending on pitch
@@ -625,20 +604,19 @@ public class Synth extends JFrame{
 		if (keystart!=61 && keystart!=63 && keystart!=66 && keystart!=68 && keystart!=70 && keystart!=73 && keystart!=75 && keystart!=78 && keystart!=80) { 
 		    whitekeys.add(new Key(y,0,40,230,keystart));
 		    
-		    //System.out.println("w: "+keystart);
-		    //x-=12;
+		    
 		} else {
 		    if (keystart==61) {
 			blackkeys.add(new Key(26,0,25,150,keystart));
-			//System.out.println("b1: "+keystart);
+			
 		    } else {
 			blackkeys.add(new Key(x,0,25,150,keystart));
 			
-			//System.out.println("b: "+keystart);
+			
 		    }
 		    y-=40;
 		}
-		//	keystart++;
+		
 	    }
 	    keys.addAll(whitekeys);
 	    keys.addAll(blackkeys);
@@ -663,10 +641,8 @@ public class Synth extends JFrame{
 	    Graphics2D g = (Graphics2D) thing;
 	    Dimension d = getSize();
 	    
-	    //g.setBackground(getBackground());
 	    g.setBackground(Color.darkGray);
 	    g.clearRect(0, 0, 500, 700);
-	    //g.clearRect(0,0,520,700);
 	    g.setColor(Color.white);
 	    g.fillRect(0, 0, 520,230);
 	    for (int i = 0; i < whitekeys.size(); i++) {
@@ -694,37 +670,13 @@ public class Synth extends JFrame{
 	}
 	public void keyTyped(KeyEvent e) {}
 	public void keyPressed(KeyEvent e) {
-	    System.out.println("key is pressed");
+	    
 	    char key=e.getKeyChar();
-	    /*boolean t = false;
-	    try {
-		System.out.println("ON? "+charKeys.get(key).isOn());
-		if (!(charKeys.get(key).isOn())) {
-		    charKeys.get(key).turnOn(charKeys.get(key));
-		    System.out.println("ON2? "+charKeys.get(key).isOn());
-		    repaint();
-		    pressed=true;
-		    repaint();
-		}
-		} catch (Error x) {}*/
 	    Key ckey;
 	    if (charKeys.containsKey(key)) {
 		keyPress(charKeys.get(key));
-		/*ckey=charKeys.get(key);
-		System.out.println(""+ckey.isOn());
-		if (!ckey.isOn()) {
-		    System.out.println("pressed");
-		    //keyPress(charKeys.get(key));
-		    ckey.turnOn(ckey);
-		    t=ckey.isOn();
-		    //System.out.println("ON? "+ckey.isOn());
-		    repaint();
-		    pressed=true;
-		    repaint();*/
-	    }//else {
-		//System.out.println("NOOOOOOOOOOOT OOOOOOOOOOONNNNNNNNNNNNNNNN");
-		//}
-	    // System.out.println("On? out of ifs: "+t);*/
+		
+	    }
 	}	
 	public void keyReleased(KeyEvent e) {
 	    char key=e.getKeyChar();
@@ -734,21 +686,15 @@ public class Synth extends JFrame{
 		ckey.turnOff(ckey);
 		pressed=false;
 		repaint();
-		//keyUnpress(charKeys.get(key));
+		
 	    }
 	}
 	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {
 	    pkey=getKey(e.getPoint());
-	    /*try {
-		 pkey.turnOn(pkey);
-		 repaint();
-		 pressed=true;
-		 repaint();
-		 } catch (Error x) {}*/
+	    
 	    if (pkey!=null) {
-		//keyPress(pkey);
-		 pkey.turnOn(pkey);
+		pkey.turnOn(pkey);
 		 repaint();
 		 pressed=true;
 		 repaint();
@@ -756,8 +702,6 @@ public class Synth extends JFrame{
 	}
 	public void mouseReleased(MouseEvent e) {
 	    if (pkey!=null) {
-		//System.out.println("mouse released");
-		//keyUnpress(pkey);
 		pkey.turnOff(pkey);
 		pressed=false;
 		repaint();
@@ -776,23 +720,13 @@ public class Synth extends JFrame{
 	    repaint();
 	    }
 	
-	/*public void keyUnpress(Key k) {
-	    //change color back
-	    k.turnOff(k);
-	    pressed=false;
-	    repaint();
-	    }*/
 	
 	public void keySound(Key k) {
 	    //makes sound
 	    k.turnOn(k);
 	    }
 	
-	/*public void keyRecord(Key k) {
-	    keySound(k);
-	    //records a sound
-	    }*/
-	
+		
 	public Key getKey(Point p) {
 	    Key r;
 	    for (int j=0; j<blackkeys.size();j++) {
