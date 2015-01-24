@@ -71,7 +71,7 @@ public class Synth extends JFrame{
         topbox.setBorder(new EmptyBorder(20, 60, 0, 0) );
 	bottombox=new JPanel(new FlowLayout(FlowLayout.CENTER));
 	instAndChan=new JPanel(new FlowLayout(FlowLayout.LEADING, 15,0));
-	bottombox.setBorder(new EmptyBorder(20,60,0,0));
+	bottombox.setBorder(new EmptyBorder(20,0,0,0));
 	piano.setFocusable(true);
 	
 	topbox.add(piano);
