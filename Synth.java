@@ -81,7 +81,7 @@ public class Synth extends JFrame{
 	instAndChan.setOpaque(true);
 	instAndChan.setBackground(Color.darkGray);
 	bottombox=new JPanel(new FlowLayout(FlowLayout.CENTER));
-	bottombox.setBorder(new EmptyBorder(20,0,0,0));
+	bottombox.setBorder(new EmptyBorder(20,-20,0,0));
 	bottombox.add(instAndChan);
 	bottombox.setBackground(Color.darkGray);
 	whole = Box.createVerticalBox();
