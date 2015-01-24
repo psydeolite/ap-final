@@ -670,12 +670,14 @@ public class Synth extends JFrame{
 	}
 	public void keyTyped(KeyEvent e) {}
 	public void keyPressed(KeyEvent e) {
-	    
 	    char key=e.getKeyChar();
-	    Key ckey;
 	    if (charKeys.containsKey(key)) {
-		keyPress(charKeys.get(key));
-		
+		if (!charKeys.get(key).isOn()) {
+		    charKeys.get(key).turnOn(charKeys.get(key));
+		    repaint();
+		    pressed=true;
+		    repaint();
+		}
 	    }
 	}	
 	public void keyReleased(KeyEvent e) {
@@ -712,21 +714,6 @@ public class Synth extends JFrame{
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 	
-	public void keyPress(Key k) {
-	    //change color
-	    keySound(k);
-	    repaint();
-	    pressed=true;
-	    repaint();
-	    }
-	
-	
-	public void keySound(Key k) {
-	    //makes sound
-	    k.turnOn(k);
-	    }
-	
-		
 	public Key getKey(Point p) {
 	    Key r;
 	    for (int j=0; j<blackkeys.size();j++) {
