@@ -55,7 +55,7 @@ public class Synth extends JFrame{
     private JFrame frame;
     private Box whole;
 
-    //Constructor: sets up the GUI
+    //Constructor: Sets up the GUI
     public Synth() {
 	open();
 	setSize(300,300);
@@ -151,7 +151,7 @@ public class Synth extends JFrame{
 	}
     }
 
-    //Method: closes the sound components 
+    //Method: Closes the sound components 
     public void close(){
 	if (syn!=null) {
 	    syn.close();
@@ -160,7 +160,7 @@ public class Synth extends JFrame{
 	instruments=null;
     }
     
-    //Method: adds a MidiEvent to a selected channel's track. Takes command parameter (earlier defined as an int in the Synth class) and an int that is the command's argument. 
+    //Method: Adds a MidiEvent to a selected channel's track. Takes command parameter (earlier defined as an int in the Synth class) and an int that is the command's argument. 
     public void addEvent(int command, int n) {
 	ShortMessage m=new ShortMessage();
 	long dur=System.currentTimeMillis()-stime;
@@ -187,7 +187,7 @@ public class Synth extends JFrame{
 	private JButton play =new JButton("Play");
 	private JButton save=new JButton("Save");
 	
-	//Constructor: sets up buttons in GUI, creates a sequence for recording
+	//Constructor: Sets up buttons in GUI, creates a sequence for recording
 	public Recorder() {
 	    numOfTracks=0;
 	    record.addActionListener(this);
@@ -209,7 +209,7 @@ public class Synth extends JFrame{
 	    return one;
 	}
 
-	//Method: decides on button action, self explanatory
+	//Method: Decides on button action, self explanatory
 	public void actionPerformed(ActionEvent a) {
 	    JButton button = (JButton) a.getSource();
 	    if (button.equals(play)) {
@@ -264,7 +264,7 @@ public class Synth extends JFrame{
 	    }
 	}
 	
-	//Method: opens up a Save dialog and allows you to save the recorded sequence as a .mid file
+	//Method: Opens up a Save dialog and allows you to save the recorded sequence as a .mid file
 	public void save() {
 	    File f=new File("file.mid");
 	    JFileChooser fc=new JFileChooser(f);
@@ -295,7 +295,7 @@ public class Synth extends JFrame{
 	    }
 	}
 	
-	//Method: starts recording 
+	//Method: Starts recording 
 	public void startRecord() {
 	    try {
 		seqr.open();
@@ -349,7 +349,7 @@ public class Synth extends JFrame{
 	    seqr.close();
 	}
 
-	//Method: Clears all tracks in all channels.
+	//Method: Clears all tracks in all channels
 	public void clearAll() {
 	    Track current;
 	    for (int i=0;i<channels.length;i++) {
